@@ -1,0 +1,20 @@
+{
+  "chapter":
+    {
+      "name": "chapter",
+      "label":"Chapter",
+      "parent_id":3
+    },
+  "city_centre":
+    {
+      "name": "city_centre",
+      "label":"City Centre",
+      "parent_id":3
+    },
+  "committee":
+    {
+      "name": "committee",
+      "label":"Committee",
+      "parent_id":3
+    }
+}

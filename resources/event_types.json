@@ -1,0 +1,7 @@
+{
+  "competition":{
+    "name": "competition",
+    "label": "Competition",
+    "is_active": 1
+  }
+}
