@@ -9,8 +9,8 @@
     <email>erik.hommel@civicoop.org</email>
   </maintainer>
   <urls>
-    <url desc="Main Extension Page">https://bitbucket.org/ErikHommel/org.iida.civiconfig</url>
-    <url desc="Documentation">https://bitbucket.org/ErikHommel/org.iida.civiconfig</url>
+    <url desc="Main Extension Page">https://github.com/CiviCooP/org.iida.civiconfig</url>
+    <url desc="Documentation">https://github.com/CiviCooP/org.iida.civiconfig</url>
     <url desc="Support">https://www.civicoop.org</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
