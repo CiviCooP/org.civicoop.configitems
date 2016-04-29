@@ -1,29 +1,3 @@
 {
-  "committee_member":
-  {
-    "name_a_b": "committee_member_for",
-    "label_a_b":"Committee Member for",
-    "contact_type_a":"Individual",
-    "contact_sub_type_a":"",
-    "name_b_a": "committee_member_is",
-    "label_b_a":"Committee Member is",
-    "contact_type_b":"Organization",
-    "contact_sub_type_b":"committee",
-    "is_active":1,
-    "is_reserved":0
-  },
-  "representative":
-  {
-    "name_a_b":"representative_for",
-    "label_a_b":"Representative for",
-    "contact_type_a":"Individual",
-    "contact_sub_type_a":"",
-    "name_b_a":"representative_is",
-    "label_b_a":"Representative is",
-    "contact_type_b":"Organization",
-    "contact_sub_type_b":"",
-    "is_active":1,
-    "is_reserved":1
-  }
 }
 

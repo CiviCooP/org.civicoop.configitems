@@ -1,17 +1,2 @@
 {
-  "cont_education_info":{
-    "name": "cont_education_info",
-    "label": "Continuing Education Info",
-    "is_active": 1
-  },
-  "award_win":{
-    "name": "award_win",
-    "label": "Award Win",
-    "is_active": 1
-  },
-  "advocate":{
-    "name": "advocate",
-    "label": "Advocate",
-    "is_active": 1
-  }
 }
