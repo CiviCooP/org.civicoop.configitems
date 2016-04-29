@@ -1,2 +1,320 @@
 {
+  "licensing_certificate":{
+    "name":"licensing_certificate",
+    "title":"License and/or Certificate",
+    "is_active":"1",
+    "is_reserved":"1",
+    "option_values":{
+      "iida":{
+        "name":"iida",
+        "value":"IIDA",
+        "label":"IIDA",
+        "is_active":1
+      },
+      "aia":{
+        "name":"aia",
+        "value":"AIA",
+        "label":"AIA",
+        "is_active":1
+      },
+      "leed":{
+        "name":"leed",
+        "value":"LEED",
+        "label":"LEED",
+        "is_active":1
+      },
+      "ncidq":{
+        "name":"ncidq",
+        "value":"NCIDQ",
+        "label":"NCIDQ",
+        "is_active":1
+      }
+    }
+  },
+  "organization_type":{
+    "name":"organization_type",
+    "title":"Type of Organization",
+    "is_active":"1",
+    "is_reserved":"1",
+    "option_values":{
+      "architecture":{
+        "name":"architecture",
+        "value":"Architecture Firm",
+        "label":"Architecture Firm",
+        "is_active":1
+      },
+      "interior_design":{
+        "name":"interior_design",
+        "value":"Interior Design Firm",
+        "label":"Interior Design Firm",
+        "is_active":1
+      },
+      "other":{
+        "name":"other",
+        "value":"Other",
+        "label":"Other",
+        "is_active":1
+      }
+    }
+  },
+  "design_practice":{
+    "name":"design_practice",
+    "title":"Area(s) of Design Practice",
+    "is_active":"1",
+    "is_reserved":"1",
+    "option_values":{
+      "education":{
+        "name":"education",
+        "value":"Education",
+        "label":"Education",
+        "is_active":1
+      },
+      "facility_planning":{
+        "name":"facility_planning",
+        "value":"Facility Planning",
+        "label":"Facility Planning",
+        "is_active":1
+      },
+      "government":{
+        "name":"government",
+        "value":"Government",
+        "label":"Government",
+        "is_active":1
+      },
+      "healthcare":{
+        "name":"healthcare",
+        "value":"Healthcare",
+        "label":"Healthcare",
+        "is_active":1
+      },
+      "hospitality":{
+        "name":"hospitality",
+        "value":"Hospitality",
+        "label":"Hospitality",
+        "is_active":1
+      },
+      "institutional":{
+        "name":"institutional",
+        "value":"Institutional",
+        "label":"Institutional",
+        "is_active":1
+      },
+      "residential":{
+        "name":"residential",
+        "value":"Residential",
+        "label":"Residential",
+        "is_active":1
+      },
+      "retail":{
+        "name":"retail",
+        "value":"Retail",
+        "label":"Retail",
+        "is_active":1
+      },
+      "workplace":{
+        "name":"workplace",
+        "value":"Workplace",
+        "label":"Workplace",
+        "is_active":1
+      },
+      "project_management":{
+        "name":"project_management",
+        "value":"Project Management",
+        "label":"Project Management",
+        "is_active":1
+      }
+    }
+  },
+  "committee_type": {
+    "name": "committee_type",
+    "title": "Type of Committee",
+    "is_active": "1",
+    "is_reserved": "1",
+    "option_values": {
+      "int_board": {
+        "name": "int_board",
+        "value": "International Board",
+        "label": "International Board",
+        "is_active": 1
+      },
+      "chapter_board": {
+        "name": "chapter_board",
+        "value": "Chapter Board",
+        "label": "Chapter Board",
+        "is_active": 1
+      },
+      "nominating_team": {
+        "name": "nominating_team",
+        "value": "Nominating Team",
+        "label": "Nominating Team",
+        "is_active": 1
+      },
+      "advisory_group": {
+        "name": "advisory_group",
+        "value": "Advisory Group",
+        "label": "Advisory Group",
+        "is_active": 1
+      },
+      "staff": {
+        "name": "staff",
+        "value": "Staff",
+        "label": "Staff",
+        "is_active": 1
+      }
+    }
+  },
+  "committee_status": {
+    "name": "committee_status",
+    "title": "Committee Status",
+    "is_active": "1",
+    "is_reserved": "1",
+    "option_values": {
+      "active": {
+        "name": "active",
+        "value": "Active",
+        "label": "Active",
+        "is_active": 1
+      },
+      "terminated": {
+        "name": "terminated",
+        "value": "Terminated",
+        "label": "Terminated",
+        "is_active": 1
+      }
+    }
+  },
+  "country_designation": {
+    "name": "country_designation",
+    "title": "Country Designation",
+    "is_active": "1",
+    "is_reserved": "1",
+    "option_values": {
+      "canada": {
+        "name": "canada",
+        "value": "Canada",
+        "label": "Canada",
+        "is_active": 1
+      },
+      "united_kingdom": {
+        "name": "united_kingdom",
+        "value": "United Kingdom",
+        "label": "United Kingdom",
+        "is_active": 1
+      }
+    }
+  },
+  "about_iida": {
+    "name": "about_iida",
+    "title": "How did you hear about IIDA?",
+    "is_active": "1",
+    "is_reserved": "1",
+    "option_values": {
+      "website": {
+        "name": "website",
+        "value": "Website",
+        "label": "Website",
+        "is_active": 1
+      },
+      "email": {
+        "name": "email",
+        "value": "Email",
+        "label": "Email",
+        "is_active": 1
+      },
+      "referral": {
+        "name": "referral",
+        "value": "Referral",
+        "label": "Referral",
+        "is_active": 1
+      },
+      "other": {
+        "name": "other",
+        "value": "Other",
+        "label": "Other",
+        "is_active": 1
+      }
+    }
+  },
+  "competition_result":{
+    "name":"competition_result",
+    "title":"Competition Participant Result",
+    "is_active":"1",
+    "is_reserved":"1",
+    "option_values":{
+      "entered":{
+        "name":"entered",
+        "value":"Entered",
+        "label":"Entered",
+        "is_active":1
+      },
+      "second":{
+        "name":"second",
+        "value":"Second",
+        "label":"Second",
+        "is_active":1
+      },
+      "special_mention":{
+        "name":"special_mention",
+        "value":"Special Mention",
+        "label":"Special Mention",
+        "is_active":1
+      },
+      "third":{
+        "name":"third",
+        "value":"Third",
+        "label":"Third",
+        "is_active":1
+      },
+      "winner":{
+        "name":"winner",
+        "value":"Winner",
+        "label":"Winner",
+        "is_active":1
+      }
+    }
+  },
+  "award":{
+    "name":"award",
+    "title":"Award",
+    "is_active":"1",
+    "is_reserved":"1",
+    "option_values":{
+      "titan":{
+        "name":"titan",
+        "value":"Titan Award",
+        "label":"Titan Award",
+        "is_active":1
+      },
+      "start":{
+        "name":"start",
+        "value":"Start Award",
+        "label":"Start Award",
+        "is_active":1
+      },
+      "member_year":{
+        "name":"member_year",
+        "value":"Member of the Year",
+        "label":"Member of the Year",
+        "is_active":1
+      },
+      "student_year":{
+        "name":"student_year",
+        "value":"Student of the Year",
+        "label":"Student of the Year",
+        "is_active":1
+      },
+      "educator_year":{
+        "name":"educator_year",
+        "value":"Educator of the Year",
+        "label":"Educator of the Year",
+        "is_active":1
+      },
+      "chapter":{
+        "name":"chapter",
+        "value":"Chapter Award",
+        "label":"Chapter Award",
+        "is_active":1
+      }
+    }
+  }
 }
