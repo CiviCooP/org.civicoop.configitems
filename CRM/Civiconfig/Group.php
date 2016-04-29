@@ -37,6 +37,24 @@ class CRM_Civiconfig_Group {
    * @access public
    */
   public function create($params) {
+    if (!empty($params['form_values'])) {
+      // Hack for smart groups.
+      $formValues = $params['form_values'];
+      unset($params['form_values']);
+
+      $savedSearch = $this->getSavedSearchWithFormValues($formValues);
+      if (!isset($savedSearch['id'])) {
+        try {
+          $savedSearch = civicrm_api3('SavedSearch', 'create', array(
+            'form_values' => $formValues,
+          ));
+        } catch (CiviCRM_API3_Exception $ex) {
+          throw new Exception('Could not create custom search for smart group type with name '
+            .$params['name'].', error from API SavedSearch Create: ' . $ex->getMessage());
+        }
+      }
+      $params['saved_search_id'] = $savedSearch['id'];
+    }
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
     if (isset($existing['id'])) {
@@ -62,6 +80,19 @@ class CRM_Civiconfig_Group {
   public function getWithName($groupName) {
     try {
       return civicrm_api3('Group', 'Getsingle', array('name' => $groupName));
+    } catch (CiviCRM_API3_Exception $ex) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Method to get a custom search based on the form values.
+   *
+   * @param array $formValues
+   */
+  public function getSavedSearchWithFormValues($formValues) {
+    try {
+      return civicrm_api3('SavedSearch', 'getsingle', array('form_values' => $formValues));
     } catch (CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
