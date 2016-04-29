@@ -92,10 +92,18 @@ class CRM_Civiconfig_Group {
    */
   public function getSavedSearchWithFormValues($formValues) {
     try {
-      return civicrm_api3('SavedSearch', 'getsingle', array('form_values' => $formValues));
+      // At the moment I think I have to serialize the result, otherwise
+      // SavedSearch.get won't find a thing.
+      // I don't use GetSingle, because things will go wrong in case of
+      // two saved searches with the same form values.
+      $get_result = civicrm_api3('SavedSearch', 'get', array('form_values' => serialize($formValues)));
     } catch (CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
+    if ($get_result['count'] == 0 || $get_result['is_error']) {
+      return NULL;
+    }
+    return CRM_Utils_Array::first($get_result['values']);
   }
 
   /**
