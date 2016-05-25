@@ -42,6 +42,7 @@ class CRM_Civiconfig_Group {
       $formValues = $params['form_values'];
       unset($params['form_values']);
 
+      /*
       $savedSearch = $this->getSavedSearchWithFormValues($formValues);
       if (!isset($savedSearch['id'])) {
         try {
@@ -54,11 +55,16 @@ class CRM_Civiconfig_Group {
         }
       }
       $params['saved_search_id'] = $savedSearch['id'];
+      */
     }
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
     if (isset($existing['id'])) {
       $this->_apiParams['id'] = $existing['id'];
+      $this->handleSavedSearch($formValues, $existing['id']);
+    }
+    else {
+      $this->handleSavedSearch($formValues);
     }
     $this->sanitizeParams();
     try {
@@ -86,24 +92,43 @@ class CRM_Civiconfig_Group {
   }
 
   /**
-   * Method to get a custom search based on the form values.
+   * Creates, updates or deletes a saved search.
+   * 
+   * A saved search has no name. So I will identify it by the ID of the
+   * smart group that uses the search. I assume that a saved search is
+   * used by at most one smart group.
+   * 
+   * If $formValues is empty, an existing saved search will be deleted
+   * from the group, so that it is not a smart group any more.
+   * 
+   * If the saved search is meant for a new smart group, just leave $groupId
+   * empty.
+   * 
+   * API
    *
    * @param array $formValues
+   * @param int $groupId ID of existing smart group for the saved search.
    */
-  public function getSavedSearchWithFormValues($formValues) {
-    try {
-      // At the moment I think I have to serialize the result, otherwise
-      // SavedSearch.get won't find a thing.
-      // I don't use GetSingle, because things will go wrong in case of
-      // two saved searches with the same form values.
-      $get_result = civicrm_api3('SavedSearch', 'get', array('form_values' => serialize($formValues)));
-    } catch (CiviCRM_API3_Exception $ex) {
-      return FALSE;
+  public function handleSavedSearch($formValues, $groupId = NULL) {
+    $params = array();
+    if (!empty($groupId)) {
+      $groupResult = civicrm_api3('Group', 'getsingle', array(
+        'id' => $groupId,
+        'return' => array('saved_search_id')
+      ));
+      $params['id'] = $groupResult['saved_search_id'];
     }
-    if ($get_result['count'] == 0 || $get_result['is_error']) {
-      return NULL;
+
+    if (empty($formValues) && !empty($params['id'])) {
+      // Delete existing saved search.
+      civicrm_api3('SavedSearch', 'delete', $params);
+      $this->_apiParams['saved_search_id'] = NULL;
     }
-    return CRM_Utils_Array::first($get_result['values']);
+    else {
+      $params['form_values'] = $formValues;
+      $savedSearchResult = civicrm_api3('SavedSearch', 'create', $params);
+      $this->_apiParams['saved_search_id'] = $savedSearchResult['id'];
+    }
   }
 
   /**
