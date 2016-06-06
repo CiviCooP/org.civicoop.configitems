@@ -61,7 +61,6 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
     }
 
     $created = $customGroup['values'][$customGroup['id']];
-    // TODO: refactor this:
     foreach ($fieldParamsArray as $customFieldData) {
       $customFieldData['custom_group_id'] = $created['id'];
       $customField = new CRM_Civiconfig_Entity_CustomField();
