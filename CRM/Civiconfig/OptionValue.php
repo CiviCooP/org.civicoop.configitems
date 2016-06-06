@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_OptionValue {
+class CRM_Civiconfig_OptionValue extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -39,7 +39,7 @@ class CRM_Civiconfig_OptionValue {
    * @return array
    * @throws Exception when error in API Option Value Create
    */
-  public function create($params) {
+  public function create(array $params) {
     $this->validateCreateParams($params);
     $existing = $this->getWithNameAndOptionGroupId($this->_apiParams['name'], $this->_apiParams['option_group_id']);
     if (isset($existing['id'])) {

@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_CustomField {
+class CRM_Civiconfig_CustomField extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -50,7 +50,7 @@ class CRM_Civiconfig_CustomField {
    * @param array $params
    * @throws Exception when error from API CustomField Create
    */
-  public function create($params) {
+  public function create(array $params) {
     $this->validateCreateParams($params);
     $existing = $this->getWithNameCustomGroupId($this->_apiParams['name'], $this->_apiParams['custom_group_id']);
     if (isset($existing['id'])) {

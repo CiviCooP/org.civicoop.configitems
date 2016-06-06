@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_Tag {
+class CRM_Civiconfig_Tag extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -45,7 +45,7 @@ class CRM_Civiconfig_Tag {
    * @return mixed
    * @throws Exception when error from API Tag Create
    */
-  public function create($params) {
+  public function create(array $params) {
     $this->validateCreateParams($params);
     $existingTag = $this->getWithName($this->_apiParams['name']);
     if (isset($existingTag['id'])) {
