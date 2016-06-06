@@ -1,0 +1,10 @@
+{
+    "pub":
+        {
+            "name": "pub",
+            "display_name": "Pub",
+            "description": "Favourite pub address",
+            "is_reserved": "1",
+            "is_active": "1"
+        }            
+}
