@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_CustomField extends CRM_Civiconfig_Entity {
+class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -32,7 +32,7 @@ class CRM_Civiconfig_CustomField extends CRM_Civiconfig_Entity {
     $this->_apiParams = $params;
     if (isset($this->_apiParams['option_group'])) {
       $this->_apiParams['option_type'] = 0;
-      $optionGroup = new CRM_Civiconfig_OptionGroup();
+      $optionGroup = new CRM_Civiconfig_Entity_OptionGroup();
       $found = $optionGroup->getWithName($this->_apiParams['option_group']);
       if (!empty($found)) {
         $this->_apiParams['option_group_id'] = $found['id'];
@@ -94,7 +94,7 @@ class CRM_Civiconfig_CustomField extends CRM_Civiconfig_Entity {
    * @throws CiviCRM_API3_Exception
    */
   protected function fixOptionGroups($customField, $optionGroupName) {
-    $optionGroup = new CRM_Civiconfig_OptionGroup();
+    $optionGroup = new CRM_Civiconfig_Entity_OptionGroup();
     $found = $optionGroup->getWithName($optionGroupName);
     // only if found is not equal to created custom field value
     if ($found['id'] != $customField[key($customField)]['option_group_id']) {

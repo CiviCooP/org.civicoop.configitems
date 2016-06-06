@@ -8,7 +8,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
+class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -64,11 +64,11 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
     // TODO: refactor this:
     foreach ($fieldParamsArray as $customFieldData) {
       $customFieldData['custom_group_id'] = $created['id'];
-      $customField = new CRM_Civiconfig_CustomField();
+      $customField = new CRM_Civiconfig_Entity_CustomField();
       $customField->create($customFieldData);
     }
     // remove custom fields that are still on install but no longer in config
-    CRM_Civiconfig_CustomField::removeUnwantedCustomFields($created['id'], $params);    
+    CRM_Civiconfig_Entity_CustomField::removeUnwantedCustomFields($created['id'], $params);    
 
     return $created;
   }
@@ -93,6 +93,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
    * @param array $params
    */
   protected function buildApiParams($params) {
+    // This can probably be refactored as well.
     $this->_apiParams = array();
     foreach ($params as $name => $value) {
       if ($name != 'fields') {
@@ -112,7 +113,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
               unset ($activityType);
             }
           } else {
-            $activityType = new CRM_Civiconfig_ActivityType();
+            $activityType = new CRM_Civiconfig_Entity_ActivityType();
             $found = $activityType->getWithNameAndOptionGroupId($this->_apiParams['extends_entity_column_value'], $activityType->getOptionGroupId());
             if (isset($found['value'])) {
               $this->_apiParams['extends_entity_column_value'] = $found['value'];
@@ -124,7 +125,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
         if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
           if (is_array($this->_apiParams['extends_entity_column_value'])) {
             foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
-              $membershipType = new CRM_Civiconfig_MembershipType();
+              $membershipType = new CRM_Civiconfig_Entity_MembershipType();
               $found = $membershipType->getWithName($extendsValue);
               if (isset($found['id'])) {
                 $this->_apiParams['extends_entity_column_value'][] = $found['id'];
@@ -132,7 +133,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
               unset ($membershipType);
             }
           } else {
-            $membershipType = new CRM_Civiconfig_MembershipType();
+            $membershipType = new CRM_Civiconfig_Entity_MembershipType();
             $found = $membershipType->getWithName($this->_apiParams['extends_entity_column_value']);
             if (isset($found['id'])) {
               $this->_apiParams['extends_entity_column_value'] = $found['id'];
@@ -144,7 +145,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
         if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
           if (is_array($this->_apiParams['extends_entity_column_value'])) {
             foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
-              $relationshipType = new CRM_Civiconfig_RelationshipType();
+              $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
               $found = $relationshipType->getWithNameAb($extendsValue);
               if (isset($found['id'])) {
                 $this->_apiParams['extends_entity_column_value'][] = $found['id'];
@@ -152,7 +153,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
               unset ($relationshipType);
             }
           } else {
-            $relationshipType = new CRM_Civiconfig_RelationshipType();
+            $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
             $found = $relationshipType->getWithNameAb($this->_apiParams['extends_entity_column_value']);
             if (isset($found['id'])) {
               $this->_apiParams['extends_entity_column_value'] = $found['id'];
@@ -172,7 +173,7 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
               unset ($eventType);
             }
           } else {
-            $eventType = new CRM_Civiconfig_EventType();
+            $eventType = new CRM_Civiconfig_Entity_EventType();
             $found = $eventType->getWithNameAndOptionGroupId($this->_apiParams['extends_entity_column_value'], $eventType->getOptionGroupId());
             if (isset($found['value'])) {
               $this->_apiParams['extends_entity_column_value'] = $found['value'];

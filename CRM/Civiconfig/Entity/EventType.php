@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_EventType extends CRM_Civiconfig_OptionValue {
+class CRM_Civiconfig_Entity_EventType extends CRM_Civiconfig_Entity_OptionValue {
   /**
    * Overridden parent method to validate params for create
    *

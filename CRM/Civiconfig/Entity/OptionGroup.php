@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_OptionGroup extends CRM_Civiconfig_Entity {
+class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -67,7 +67,7 @@ class CRM_Civiconfig_OptionGroup extends CRM_Civiconfig_Entity {
   protected function processOptionValues($optionGroupId, $optionValueParams) {
     foreach ($optionValueParams as $optionValueName => $params) {
       $params['option_group_id'] = $optionGroupId;
-      $optionValue = new CRM_Civiconfig_OptionValue();
+      $optionValue = new CRM_Civiconfig_Entity_OptionValue();
       $optionValue->create($params);
     }
   }

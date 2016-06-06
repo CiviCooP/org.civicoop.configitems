@@ -24,11 +24,11 @@ class CRM_Civiconfig_Config {
     $this->resourcesPath = $settings['extensionsDir'].'/org.iida.civiconfig/resources/';
     
     foreach ($this->getConfigurableEntityTypes() as $entityType) {
-      $configClass = "CRM_Civiconfig_$entityType";
+      $configClass = "CRM_Civiconfig_Entity_$entityType";
       // TODO: Check whether class exists.
       $entityTypeConfig = new $configClass();
       // Create all entities using the json files in the resources directory.
-      $entityTypeConfig->createAll(new CRM_Civiconfig_ResourcesDirParamsProvider($entityType));
+      $entityTypeConfig->createAll(new CRM_Civiconfig_ParamsProvider_ResourcesDir($entityType));
     }
   }
 

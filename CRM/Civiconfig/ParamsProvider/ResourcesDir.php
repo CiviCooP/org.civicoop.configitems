@@ -6,7 +6,7 @@
  * @date 6 Jun 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_ResourcesDirParamsProvider extends CRM_Civiconfig_ParamsProvider {
+class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsProvider {
   protected $_resourcesPath = NULL;
   protected $_jsonFile = NULL;
   

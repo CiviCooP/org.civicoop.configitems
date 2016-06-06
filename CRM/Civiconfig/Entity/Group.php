@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_Group extends CRM_Civiconfig_Entity {
+class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
