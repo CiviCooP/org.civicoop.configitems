@@ -30,9 +30,6 @@ class CRM_Civiconfig_Config {
       // Create all entities using the json files in the resources directory.
       $entityTypeConfig->createAll(new CRM_Civiconfig_ResourcesDirParamsProvider($entityType));
     }
-    
-    // This is still here, because this is not really an entity.
-    $this->setCustomData();
   }
 
   /**
@@ -68,34 +65,10 @@ class CRM_Civiconfig_Config {
       'EventType',
       'ActivityType',
       'Tag',
-      // customData as last one because it might need one of the previous ones (option group, relationship types)
-      // (I left custom data out for a moment, because it's a special case.)
+      'CustomGroup',
+      // customGroep as last one because it might need one of the previous ones (option group, relationship types)
+      // DO NOT INCLUDE CustomField, because custom fields are updated together
+      // with custom groups.
     );
-  }
-
-  /**
-   * Method to set the custom data groups and fields
-   *
-   * @throws Exception when config json could not be loaded
-   * @access protected
-   */
-  protected function setCustomData() {
-    $jsonFile = $this->resourcesPath.'custom_data.json';
-    if (!file_exists($jsonFile)) {
-      throw new Exception('Could not load custom data configuration file for extension, contact your system administrator!');
-    }
-    $customDataJson = file_get_contents($jsonFile);
-    $customData = json_decode($customDataJson, true);
-    foreach ($customData as $customGroupName => $customGroupData) {
-      $customGroup = new CRM_Civiconfig_CustomGroup();
-      $created = $customGroup->create($customGroupData);
-      foreach ($customGroupData['fields'] as $customFieldName => $customFieldData) {
-        $customFieldData['custom_group_id'] = $created['id'];
-        $customField = new CRM_Civiconfig_CustomField();
-        $customField->create($customFieldData);
-      }
-      // remove custom fields that are still on install but no longer in config
-      CRM_Civiconfig_CustomField::removeUnwantedCustomFields($created['id'], $customGroupData);
-    }
   }
 }

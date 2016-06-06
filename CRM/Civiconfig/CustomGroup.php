@@ -1,6 +1,8 @@
 <?php
 /**
  * Class for CustomGroup configuration
+ * 
+ * This class creates the custom fields as well.
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
  * @date 3 Feb 2016
@@ -33,13 +35,15 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
   }
 
   /**
-   * Method to create custom group
+   * Method to create custom group with custom fields.
    *
    * @param array $params
    * @return array
    * @throws Exception when error from API CustomGroup Create
    */
   public function create(array $params) {
+    $fieldParamsArray = $params['fields'];
+
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
     if (isset($existing['id'])) {
@@ -55,7 +59,18 @@ class CRM_Civiconfig_CustomGroup extends CRM_Civiconfig_Entity {
         . ' to extend ' . $this->_apiParams['extends'] . ', error from API CustomGroup Create: ' .
         $ex->getMessage() . ", parameters : " . implode(";", $this->_apiParams));
     }
-    return $customGroup['values'][$customGroup['id']];
+
+    $created = $customGroup['values'][$customGroup['id']];
+    // TODO: refactor this:
+    foreach ($fieldParamsArray as $customFieldData) {
+      $customFieldData['custom_group_id'] = $created['id'];
+      $customField = new CRM_Civiconfig_CustomField();
+      $customField->create($customFieldData);
+    }
+    // remove custom fields that are still on install but no longer in config
+    CRM_Civiconfig_CustomField::removeUnwantedCustomFields($created['id'], $params);    
+
+    return $created;
   }
 
   /**
