@@ -1,9 +1,9 @@
 <?php
 /**
- * Class for RelationshipType configuration
+ * Class for LocationType configuration
  *
- * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
- * @date 3 Feb 2016
+ * @author Johan Vervloet (Chirojeugd-Vlaanderen vzw) <helpdesk@chiro.be>
+ * @date 6 Jun 2016
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
