@@ -37,10 +37,21 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    * @access public
    */
   public function create(array $params) {
+    if (!empty($params['form_values'])) {
+      // Hack for smart groups.
+      $formValues = $params['form_values'];
+      unset($params['form_values']);
+    }
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
     if (isset($existing['id'])) {
       $this->_apiParams['id'] = $existing['id'];
+      // Some exception handling here would be nice:
+      $this->handleSavedSearch($formValues, $existing['id']);
+    }
+    else {
+      // Some exception handling here would be nice:
+      $this->handleSavedSearch($formValues);
     }
     $this->sanitizeParams();
     try {
@@ -65,6 +76,42 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
     } catch (CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
+  }
+
+  /**
+   * Creates or updates a saved search.
+   * 
+   * A saved search has no name. So I will identify it by the ID of the
+   * smart group that uses the search. I assume that a saved search is
+   * used by at most one smart group.
+   * 
+   * If the saved search is meant for a new smart group, just leave $groupId
+   * empty.
+   * 
+   * The saved_search_id will be assigned to the API params.
+   * 
+   * If $formValues is empty, nothing will happen.
+   *
+   * @param array $formValues
+   * @param int $groupId ID of existing smart group for the saved search.
+   * 
+   * @throws ApiException
+   */
+  public function handleSavedSearch($formValues, $groupId = NULL) {
+    if (empty($formValues)) {
+      return;
+    }
+    $params = array();
+    if (!empty($groupId)) {
+      $groupResult = civicrm_api3('Group', 'getsingle', array(
+        'id' => $groupId,
+        'return' => array('saved_search_id')
+      ));
+      $params['id'] = $groupResult['saved_search_id'];
+    }
+    $params['form_values'] = $formValues;
+    $savedSearchResult = civicrm_api3('SavedSearch', 'create', $params);
+    $this->_apiParams['saved_search_id'] = $savedSearchResult['id'];
   }
 
   /**

@@ -7,6 +7,17 @@
     "group_type":"2",
     "description":"Group for IIDA Donors"
   },
+  "women": {
+    "name":"women",
+    "title":"Women",
+    "is_active":1,
+    "is_reserved":0,
+    "group_type":"2",
+    "description": "Smart group with all women",
+    "form_values": {
+        "gender_id":"1"
+    }
+  },
   "subscriber": {
     "name":"iida_subscriber",
     "title": "Subscribers",

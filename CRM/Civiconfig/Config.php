@@ -19,7 +19,8 @@ class CRM_Civiconfig_Config {
    * CRM_Civiconfig_Config constructor.
    */
   function __construct() {
-
+    // TODO: If the extensions dir is '[civicrm.files]/ext/' (which is the default)
+    // the construction below will not work.
     $settings = civicrm_api3('Setting', 'Getsingle', array());
     $this->resourcesPath = $settings['extensionsDir'].'/org.iida.civiconfig/resources/';
     
