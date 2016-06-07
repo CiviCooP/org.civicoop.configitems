@@ -1,5 +1,7 @@
+CAREFUL! We have renamed the GitHub repo to avoid confusion on a specific project but NOT yet renamed the overall extension. That will be the next step :-)
+
 =======
-# org.iida.civiconfig
+# org.civicoop.configitems
 CiviCRM native extension to load all kinds of configuration
 
 This extension loads configuration items from the JSON files in the resources folder and creates or updates them in the CiviCRM installation when you run the API IidaConfig Update. Obviously the extension has been developed for one specific project (thanks to Emphanos and their customer IIDA for funding!) but the principle can easily be copied and re-used.
