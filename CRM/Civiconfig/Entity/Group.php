@@ -6,7 +6,7 @@
  * @date 3 Feb 2016
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_Group {
+class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
@@ -36,7 +36,7 @@ class CRM_Civiconfig_Group {
    * @throws Exception when error in API Group Create or when missing mandatory param name
    * @access public
    */
-  public function create($params) {
+  public function create(array $params) {
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
     if (isset($existing['id'])) {
