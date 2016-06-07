@@ -65,6 +65,7 @@ class CRM_Civiconfig_Config {
       'EventType',
       'ActivityType',
       'Tag',
+      'LocationType',
       'CustomGroup',
       // customGroep as last one because it might need one of the previous ones (option group, relationship types)
       // DO NOT INCLUDE CustomField, because custom fields are updated together
