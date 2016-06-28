@@ -11,12 +11,24 @@
     "name":"women",
     "title":"Women",
     "is_active":1,
-    "is_reserved":0,
+    "is_reserved":1,
     "group_type":"2",
-    "description": "Smart group with all women",
-    "form_values": {
-        "gender_id":"1"
-    }
+    "description": "Smart group with all women, based on advanced search.",
+    "form_values": [
+        ["gender_id", "=", 1]
+    ]
+  },
+  "illinois_households": {
+    "name": "illinois_households",
+    "title": "Households in Illinois",
+    "is_active": 1,
+    "is_reserved": 1,
+    "group_type": 2,
+    "description": "Smart group based on a custom search.",
+    "form_values": [
+        ["state_province_id", "=", 1012],
+        ["customSearchID", "=", 1]
+    ]
   },
   "subscriber": {
     "name":"iida_subscriber",
