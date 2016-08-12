@@ -25,7 +25,7 @@ class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
    */
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('Missing mandatory param name when constructing class CRM_Civiconfig_Tag');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
     // if parent is set, retrieve parent number with name and set parents
@@ -59,9 +59,9 @@ class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
     }
     try {
       civicrm_api3('Tag', 'Create', $this->_apiParams);
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update tag type with name'
-        .$this->_apiParams['name'].', error from API Tag Create: ' . $ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update tag type with name'
+        .$this->_apiParams['name'].'. Error from API Tag.Create: ' . $ex->getMessage() . '.');
     }
   }
 
@@ -76,7 +76,7 @@ class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
   public function getWithName($name) {
     try {
       return civicrm_api3('Tag', 'Getsingle', array('name' => $name));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }

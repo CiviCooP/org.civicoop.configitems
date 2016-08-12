@@ -15,13 +15,13 @@ class CRM_Civiconfig_Entity_EventType extends CRM_Civiconfig_Entity_OptionValue 
    */
   protected function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('Missing mandatory param name in class CRM_Civiconfig_EventType');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
     try {
       $this->_apiParams['option_group_id'] = $this->getOptionGroupId();
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Unable to find option group for event_type in CRM_Civiconfig_EventType, contact your system administrator');
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException("Unable to find option group for event_type in " . get_class() . ", contact your system administrator.");
     }
   }
 

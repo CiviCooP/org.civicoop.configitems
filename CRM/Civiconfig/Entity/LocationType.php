@@ -25,8 +25,7 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
    */
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('When trying to create a Location Type, name is mandatory
-        parameter and can not be empty in class ' . get_class());
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     // The line below is in a strange place in the code. But I'll keep it
     // there, because it is there as well for every other entity type.
@@ -48,9 +47,9 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
     }
     try {
       civicrm_api3('LocationType', 'Create', $this->_apiParams);
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update location type with name '.$this->_apiParams['name']
-        .', error from API LocationType Create: '.$ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update location type with name '.$this->_apiParams['name']
+        .'. Error from API LocationType.Create: '.$ex->getMessage() . '.');
     }
   }
 
@@ -66,7 +65,7 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
     try {
       return civicrm_api3('LocationType', 'Getsingle',
         array('name' => $name));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }

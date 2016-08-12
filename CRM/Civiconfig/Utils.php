@@ -52,8 +52,8 @@ class CRM_Civiconfig_Utils {
       $valueList[0] = ts('- select -');
       asort($valueList);
     } catch (\CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not find an option group with name '.$optionGroupName
-        .' contact your system administrator. Error from API OptionGroup Getvalue: '.$ex->getMessage());
+      throw new \CRM_Civiconfig_EntityException('Could not find an option group with name '.$optionGroupName
+        .',  contact your system administrator. Error from API OptionGroup.Getvalue: '.$ex->getMessage() . '.');
     }
     return $valueList;
   }

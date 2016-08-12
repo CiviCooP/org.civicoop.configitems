@@ -26,8 +26,7 @@ class CRM_Civiconfig_Entity_RelationshipType extends CRM_Civiconfig_Entity {
   private function validateCreateParams($params) {
     if (!isset($params['name_a_b']) || empty($params['name_a_b']) ||
       !isset($params['name_b_a']) || empty($params['name_b_a'])) {
-      throw new Exception('When trying to create a Relationship Type name_a_b and name_b_a are mandatory
-        parameter and can not be empty in class CRM_CiviConfig_RelationshipType');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name_a_b' and/or 'name_b_a' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
   }
@@ -53,9 +52,9 @@ class CRM_Civiconfig_Entity_RelationshipType extends CRM_Civiconfig_Entity {
     }
     try {
       civicrm_api3('RelationshipType', 'Create', $this->_apiParams);
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update relationship type with name '.$this->_apiParams['name_a_b']
-        .', error from API RelationshipType Create: '.$ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update relationship type with name '.$this->_apiParams['name_a_b']
+        .'. Error from API RelationshipType.Create: '.$ex->getMessage() . '.');
     }
   }
 
@@ -71,7 +70,7 @@ class CRM_Civiconfig_Entity_RelationshipType extends CRM_Civiconfig_Entity {
     try {
       return civicrm_api3('RelationshipType', 'Getsingle',
         array('name_a_b' => $nameAb));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }
