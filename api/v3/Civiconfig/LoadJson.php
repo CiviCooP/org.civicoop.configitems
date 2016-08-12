@@ -1,19 +1,20 @@
 <?php
 
 /**
- * Civiconfig.Update API Updates the configuration with new settings
+ * Civiconfig.LoadJson API method.
+ * Calls the loader to add and update config items from JSON files.
  *
- * @param array $params
+ * @param array $params Parameters
  * @return array API result descriptor
  * @see civicrm_api3_create_success
  * @see civicrm_api3_create_error
  * @throws API_Exception
  */
-function civicrm_api3_civiconfig_update($params) {
+function civicrm_api3_civiconfig_load_json($params) {
 
   try {
 
-    // Get default path if it isn't set ([this.extension]/resources/)
+    //  default path if it isn't set ([this.extension]/resources/)
     if (empty($params['path'])) {
       $params['path'] = \CRM_Civiconfig_Utils::getDefaultResourcesPath();
     }
@@ -24,7 +25,7 @@ function civicrm_api3_civiconfig_update($params) {
 
     // Seems everything went well!
     // Individual entity types may or may have not run correctly - this will be shown in $result
-    return civicrm_api3_create_success($result, $params, 'Civiconfig', 'Update');
+    return civicrm_api3_create_success($result, $params, 'Civiconfig', 'Run');
 
   } catch(\CRM_Civiconfig_Exception $e) {
 
@@ -34,14 +35,13 @@ function civicrm_api3_civiconfig_update($params) {
 }
 
 /**
- * Civiconfig.Update API specification
+ * Civiconfig.LoadJson API specification.
  * This is used for documentation and validation.
- * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
  *
- * @param array $params description of fields supported by this API call
- * @return void
+ * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
+ * @param array $params Info about parameters this API call supports
  */
-function _civicrm_api3_civiconfig_update_spec(&$params) {
+function _civicrm_api3_civiconfig_load_json_spec(&$params) {
     $params = [
         'path' => [
           'required' => 0,
