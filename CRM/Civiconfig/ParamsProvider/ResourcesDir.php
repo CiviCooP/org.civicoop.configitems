@@ -55,7 +55,7 @@ class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsPr
     $params = json_decode($jsonData, true);
 
     if($params === null || !is_array($params)) {
-      throw new \CRM_Civiconfig_EntityException("Could not parse JSON file '{$this->_jsonFile}'.");
+      throw new \CRM_Civiconfig_EntityException("Could not parse JSON file '{$jsonFile}'.");
     }
 
     return $params;
