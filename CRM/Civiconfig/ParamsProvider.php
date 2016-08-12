@@ -7,12 +7,15 @@
  * @license AGPL-3.0
  */
 abstract class CRM_Civiconfig_ParamsProvider {
+
   /**
    * Returns params needed to create entities.
+   *
+   * @param string $entityType CiviCRM entity type to create params for
    * 
-   * If you want to get your configuration from something else than the
-   * json-files in the resource directory, just overload this class, and use
-   * it in Config.php.
+   * If you want to get your configuration from something else than JSON files,
+   * just overload this class and call CRM_Civiconfig_Config::updateConfig($yourCustomParamsProvider).
    */
-  public abstract function getParamsArray();
+  public abstract function getParamsArray($entityType);
+
 }
