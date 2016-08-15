@@ -57,10 +57,10 @@ class CRM_Civiconfig_Loader {
         $entityTypeConfig = new $configClass();
         $entityTypeConfig->createAll($params);
 
-        $ret[$entityType] = "SUCCESS";
+        $ret[$entityType] = "{$entityType}: SUCCESS";
 
       } catch (\CRM_Civiconfig_EntityException $e) {
-        $ret[$entityType] = "ERROR: " . $e->getMessage();
+        $ret[$entityType] = "{$entityType}: ERROR - " . $e->getMessage();
       }
 
     }

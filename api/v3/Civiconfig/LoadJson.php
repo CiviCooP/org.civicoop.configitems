@@ -46,7 +46,7 @@ function _civicrm_api3_civiconfig_load_json_spec(&$params) {
         'path' => [
           'required' => 0,
           'name' => 'path',
-          'title' => 'Resource Directory Path (default: org.civicoop.configitems/resources)',
+          'title' => 'JSON Resources Path',
           'type' => \CRM_Utils_Type::T_STRING,
         ],
     ];

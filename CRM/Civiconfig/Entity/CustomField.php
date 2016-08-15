@@ -124,8 +124,12 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
     try {
       $existingCustomFields = civicrm_api3('CustomField', 'Get', array('custom_group_id' => $customGroupId));
       foreach ($existingCustomFields['values'] as $existingId => $existingField) {
-        // if existing field not in config custom data, delete custom field
-        if (!isset($configCustomGroupData['fields'][$existingField['name']])) {
+        // If existing field not in config custom data, delete custom field
+        // Fix KL: check field['name'] if the custom groups array doesn't use names as keys
+        if (
+          !isset($configCustomGroupData['fields'][$existingField['name']]) &&
+          !in_array($existingField['name'], array_column($configCustomGroupData['fields'], 'name'))
+        ) {
           civicrm_api3('CustomField', 'Delete', array('id' => $existingId));
         }
       }

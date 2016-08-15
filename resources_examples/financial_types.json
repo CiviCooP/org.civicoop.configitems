@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Donation",
+    "is_deductible": "1",
+    "is_reserved": "0",
+    "is_active": "0"
+  },
+  {
+    "name": "Member Dues",
+    "is_deductible": "1",
+    "is_reserved": "0",
+    "is_active": "0"
+  },
+  {
+    "name": "Campaign Contribution",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "0"
+  },
+  {
+    "name": "Event Fee (BTW 21%)",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "1"
+  },
+  {
+    "name": "Member Dues (BTW 21%)",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "1"
+  },
+  {
+    "name": "Member Dues (BTW 0%)",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "1"
+  },
+  {
+    "name": "Services Provided (TEST)",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "1"
+  },
+  {
+    "name": "Services Received (TEST)",
+    "is_deductible": "0",
+    "is_reserved": "0",
+    "is_active": "1"
+  }
+]

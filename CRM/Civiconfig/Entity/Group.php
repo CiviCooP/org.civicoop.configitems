@@ -32,7 +32,8 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
   /**
    * Method to create or update group
    *
-   * @param $params
+   * @param array $params
+   * @return void
    * @throws Exception when error in API Group Create or when missing mandatory param name
    * @access public
    */

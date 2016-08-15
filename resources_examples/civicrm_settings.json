@@ -1,0 +1,11 @@
+{
+  "dateformatDatetime": "%e %B %Y %H:%M",
+  "dateformatFull": "%e %B %Y",
+  "dateformatPartial": "%m-%Y",
+  "dateformatTime": "%H:%M",
+  "dateformatYear": "%Y",
+  "dateformatFinancialBatch": "%d-%m-%Y",
+  "dateInputFormat": "dd-mm-yy",
+  "timeInputFormat": "2",
+  "weekBegins": "1"
+}

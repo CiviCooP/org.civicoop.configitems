@@ -35,19 +35,22 @@ class CRM_Civiconfig_Config {
   public function getSupportedEntityTypes() {
     // TODO: make this list configurable.
     return array(
+      'CivicrmSetting',
       'ContactType',
       'MembershipType',
       'RelationshipType',
       'OptionGroup',
       'Group',
+      'Tag',
+      'FinancialAccount',
+      'FinancialType',
       'EventType',
       'ActivityType',
-      'Tag',
       'LocationType',
+      'CaseType',
       'CustomGroup',
-      // customGroup as last one because it might need one of the previous ones (option group, relationship types)
-      // DO NOT INCLUDE CustomField, because custom fields are updated together
-      // with custom groups.
+      // CustomGroup as last one because it might need one of the previous ones (option group, relationship types)
+      // DO NOT INCLUDE CustomField, because custom fields are updated together with custom groups.
     );
   }
 }

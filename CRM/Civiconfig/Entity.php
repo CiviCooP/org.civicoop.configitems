@@ -11,7 +11,7 @@ abstract class CRM_Civiconfig_Entity {
   /**
    * Method to create or update any entity
    *
-   * @param array $params
+   * @param array $params Parameters
    * @return mixed
    * @throws Exception when error from API RelationshipType Create
    */  
