@@ -25,8 +25,7 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
    */
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('When trying to create a Membership Type name is a mandatory parameter and
-      can not be empty in class CRM_Civiconfig_MembershipType');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
   }
@@ -99,10 +98,10 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
           $this->_apiParams['financial_type_id'] = civicrm_api3('FinancialType', 'Getvalue',
             array('name' => $this->_apiParams['financial_type'], 'return' => 'id'));
           unset($this->_apiParams['financial_type']);
-        } catch (CiviCRM_API3_Exception $ex) {
-          throw new Exception('Could not find a financial type with name ' . $this->_apiParams['financial_type']
+        } catch (\CiviCRM_API3_Exception $ex) {
+          throw new \CRM_Civiconfig_EntityException('Could not find a financial type with name ' . $this->_apiParams['financial_type']
             . ', so the membership type with name' . $this->_apiParams['name'] . ' can not be updated or created.
-            Error from API FinancialType Getvalue: ' . $ex->getMessage());
+            Error from API FinancialType.Getvalue: ' . $ex->getMessage() . '.');
         }
       } else {
         if (isset($existing['financial_type_id'])) {
@@ -111,7 +110,7 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
           try {
             $this->_apiParams['financial_type_id'] = civicrm_api3('FinancialType', 'Getvalue',
               array('name' => 'Member Dues', 'return' => 'id'));
-          } catch (CiviCRM_API3_Exception $ex) {
+          } catch (\CiviCRM_API3_Exception $ex) {
             $this->_apiParams['financial_type_id'] = 1;
           }
         }
@@ -156,10 +155,10 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
           $this->_apiParams['member_of_contact_id'] = civicrm_api3('Contact', 'Getvalue',
             array('sort_name' => $this->_apiParams['member_of_contact'], 'return' => 'id'));
           unset($this->_apiParams['member_of_contact']);
-        } catch (CiviCRM_API3_Exception $ex) {
-          throw new Exception('Could not find a contact with sort_name ' . $this->_apiParams['member_of_contact']
+        } catch (\CiviCRM_API3_Exception $ex) {
+          throw new \CRM_Civiconfig_EntityException('Could not find a contact with sort_name ' . $this->_apiParams['member_of_contact']
             . ', so the membership type with name' . $this->_apiParams['name']
-            . ' can not be updated or created. Error from API Contact Getvalue: ' . $ex->getMessage());
+            . ' can not be updated or created. Error from API Contact.Getvalue: ' . $ex->getMessage() . '.');
         }
       } else {
         if (isset($existing['member_of_contact_id'])) {
@@ -168,10 +167,10 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
           try {
             $this->_apiParams['member_of_contact_id'] = civicrm_api3('Domain', 'Getvalue',
               array('id' => $this->_apiParams['domain_id'], 'return' => 'contact_id'));
-          } catch (CiviCRM_API3_Exception $ex) {
-            throw new Exception('Could not find a domain ' . $this->_apiParams['domain_id']
+          } catch (\CiviCRM_API3_Exception $ex) {
+            throw new \CRM_Civiconfig_EntityException('Could not find a domain ' . $this->_apiParams['domain_id']
               . ', the membership type with name' . $this->_apiParams['name'] . ' can not be updated or created.
-              Error from API Domain Getvalue: ' . $ex->getMessage());
+              Error from API Domain Getvalue: ' . $ex->getMessage() . '.');
           }
         }
       }
@@ -198,8 +197,8 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
       if (isset($this->_apiParams['visibility'])) {
         $this->fixVisibility($membershipType['id'], $this->_apiParams['visibility']);
       }
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update membership type with name '.$this->_apiParams['name']
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update membership type with name '.$this->_apiParams['name']
         .', error from API MembershipType Create: '.$ex->getMessage());
     }
   }
@@ -227,7 +226,7 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
   public function getWithName($name) {
     try {
       return civicrm_api3('MembershipType', 'Getsingle', array('name' => $name));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }

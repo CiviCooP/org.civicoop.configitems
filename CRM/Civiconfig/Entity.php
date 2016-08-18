@@ -7,10 +7,11 @@
  * @license AGPL-3.0
  */
 abstract class CRM_Civiconfig_Entity {
+
   /**
    * Method to create or update any entity
    *
-   * @param array $params
+   * @param array $params Parameters
    * @return mixed
    * @throws Exception when error from API RelationshipType Create
    */  
@@ -18,15 +19,14 @@ abstract class CRM_Civiconfig_Entity {
   
   /**
    * Creates/updates all objects at once.
-   * 
-   * @param $paramsProvider ParamsProvider to provide the 'params' for the
-   *                         objects to be created.
+   * This function now simply gets an array of items instead of having to fetch it here.
+   *
+   * @param array $paramsArray
    */
-  public function createAll(CRM_Civiconfig_ParamsProvider $paramsProvider) {
-    $paramsArray = $paramsProvider->getParamsArray();
-    
+  public function createAll($paramsArray) {
     foreach ($paramsArray as $params) {
       $this->create($params);
     }    
   }
+
 }

@@ -28,8 +28,7 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name']) || !isset($params['extends']) ||
       empty($params['extends'])) {
-      throw new Exception('When trying to create a Custom Group name and extends are mandatory parameters
-      and can not be empty in class CRM_Civiconfig_CustomGroup');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' and/or 'extends' in class " . get_class()  . ".");
     }
     $this->buildApiParams($params);
   }
@@ -54,10 +53,10 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
     }
     try {
       $customGroup = civicrm_api3('CustomGroup', 'Create', $this->_apiParams);
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update custom group with name ' . $this->_apiParams['name']
-        . ' to extend ' . $this->_apiParams['extends'] . ', error from API CustomGroup Create: ' .
-        $ex->getMessage() . ", parameters : " . implode(";", $this->_apiParams));
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update custom group with name ' . $this->_apiParams['name']
+        . ' to extend ' . $this->_apiParams['extends'] . '. Error from API CustomGroup.Create: ' .
+        $ex->getMessage() . ", parameters : " . implode(";", $this->_apiParams) . '.');
     }
 
     $created = $customGroup['values'][$customGroup['id']];
@@ -81,7 +80,7 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
   public function getWithName($name) {
     try {
       return civicrm_api3('CustomGroup', 'Getsingle', array('name' => $name));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }
@@ -104,7 +103,7 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
         if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
           if (is_array($this->_apiParams['extends_entity_column_value'])) {
             foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
-              $activityType = new CRM_Civiconfig_ActivityType();
+              $activityType = new CRM_Civiconfig_Entity_ActivityType();
               $found = $activityType->getWithNameAndOptionGroupId($extendsValue, $activityType->getOptionGroupId());
               if (isset($found['value'])) {
                 $this->_apiParams['extends_entity_column_value'][] = $found['value'];
@@ -164,7 +163,7 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
         if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
           if (is_array($this->_apiParams['extends_entity_column_value'])) {
             foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
-              $eventType = new CRM_Civiconfig_EventType();
+              $eventType = new CRM_Civiconfig_Entity_EventType();
               $found = $eventType->getWithNameAndOptionGroupId($extendsValue, $eventType->getOptionGroupId());
               if (isset($found['value'])) {
                 $this->_apiParams['extends_entity_column_value'][] = $found['value'];

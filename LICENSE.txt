@@ -1,5 +1,5 @@
-Package: org.iida.civiconfig
-Copyright (C) 2016, Erik Hommel <erik.hommel@civicoop.org>
+Package: org.civicoop.configitems
+Copyright (C) 2016, IIDA / CiviCooP <helpdesk@civicoop.org>
 Licensed under the GNU Affero Public License 3.0 (below).
 
 -------------------------------------------------------------------------------

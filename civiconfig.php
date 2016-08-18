@@ -1,4 +1,16 @@
 <?php
+/**
+ * CiviCRM Configuration Loader (org.civicoop.configitems)
+ * For information about this extension, see README.md and info.xml.
+ *
+ * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
+ * @author Johan Vervloet (Chirojeugd-Vlaanderen vzw) <helpdesk@chiro.be>
+ * @author Kevin Levie <kevin.levie@civicoop.org>
+ *
+ * @package org.civicoop.configitems
+ * @license AGPL-3.0
+ * @link https://github.com/civicoop/org.civicoop.configitems
+ */
 
 require_once 'civiconfig.civix.php';
 
@@ -13,10 +25,9 @@ function civiconfig_civicrm_config(&$config) {
 
 /**
  * Implements hook_civicrm_xmlMenu().
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  *
  * @param $files array(string)
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
 function civiconfig_civicrm_xmlMenu(&$files) {
   _civiconfig_civix_civicrm_xmlMenu($files);
@@ -60,15 +71,11 @@ function civiconfig_civicrm_disable() {
 
 /**
  * Implements hook_civicrm_upgrade().
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'
  * @param $queue CRM_Queue_Queue, (for 'enqueue') the modifiable list of pending up upgrade tasks
- *
- * @return mixed
- *   Based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
- *                for 'enqueue', returns void
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
+ * @return mixed Based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending) for 'enqueue', returns void
  */
 function civiconfig_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
   return _civiconfig_civix_civicrm_upgrade($op, $queue);
@@ -79,7 +86,6 @@ function civiconfig_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * Generate a list of entities to create/deactivate/delete when this module
  * is installed, disabled, uninstalled.
- *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function civiconfig_civicrm_managed(&$entities) {
@@ -121,18 +127,3 @@ _civiconfig_civix_civicrm_angularModules($angularModules);
 function civiconfig_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
   _civiconfig_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
-
-/**
- * Functions below this ship commented out. Uncomment as required.
- *
-
-/**
- * Implements hook_civicrm_preProcess().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
- *
-function civiconfig_civicrm_preProcess($formName, &$form) {
-
-}
-
-*/

@@ -175,7 +175,7 @@ function _civiconfig_civix_civicrm_managed(&$entities) {
     $es = include $file;
     foreach ($es as $e) {
       if (empty($e['module'])) {
-        $e['module'] = 'org.iida.civiconfig';
+        $e['module'] = 'org.civicoop.configitems';
       }
       $entities[] = $e;
     }
@@ -204,7 +204,7 @@ function _civiconfig_civix_civicrm_caseTypes(&$caseTypes) {
       // throw new CRM_Core_Exception($errorMessage);
     }
     $caseTypes[$name] = array(
-      'module' => 'org.iida.civiconfig',
+      'module' => 'org.civicoop.configitems',
       'name' => $name,
       'file' => $file,
     );
@@ -230,7 +230,7 @@ function _civiconfig_civix_civicrm_angularModules(&$angularModules) {
     $name = preg_replace(':\.ang\.php$:', '', basename($file));
     $module = include $file;
     if (empty($module['ext'])) {
-      $module['ext'] = 'org.iida.civiconfig';
+      $module['ext'] = 'org.civicoop.configitems';
     }
     $angularModules[$name] = $module;
   }

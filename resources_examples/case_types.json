@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1",
+    "name": "job",
+    "title": "Job",
+    "description": "A job, project or service handled through this platform",
+    "is_active": "1",
+    "weight": "1",
+    "definition": {
+      "activityTypes": [
+        {
+          "name": "Assignment Conditions"
+        }
+      ],
+      "activitySets": [
+        {
+          "name": "standard_timeline",
+          "label": "Standard Timeline",
+          "timeline": "1",
+          "activityTypes": [
+            {
+              "name": "Open Case",
+              "status": "Completed"
+            }
+          ]
+        }
+      ],
+      "caseRoles": [
+        {
+          "name": "Job: Person Responsible",
+          "creator": "1",
+          "manager": "1"
+        },
+        {
+          "name": "Job: Freelancer",
+          "manager": "0"
+        }
+      ]
+    },
+    "is_forkable": "1",
+    "is_forked": ""
+  }
+]

@@ -24,7 +24,7 @@ class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
    */
   protected function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('Missing mandatory param name in class CRM_Civiconfig_OptionGroup');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
   }
@@ -52,9 +52,9 @@ class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
       if (isset($params['option_values'])) {
         $this->processOptionValues($optionGroup['id'], $params['option_values']);
       }
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update option_group with name'
-        .$this->_apiParams['name'].', error from API OptionGroup Create: ' . $ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update option_group with name'
+        .$this->_apiParams['name'].'. Error from API OptionGroup.Create: ' . $ex->getMessage() . '.');
     }
   }
 
@@ -82,7 +82,7 @@ class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
     $params = array('name' => $name);
     try {
       return civicrm_api3('OptionGroup', 'Getsingle', $params);
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return array();
     }
   }

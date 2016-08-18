@@ -24,7 +24,7 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    */
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('Missing mandatory param name in class CRM_Civiconfig_Group');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
   }
@@ -32,7 +32,8 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
   /**
    * Method to create or update group
    *
-   * @param $params
+   * @param array $params
+   * @return void
    * @throws Exception when error in API Group Create or when missing mandatory param name
    * @access public
    */
@@ -57,9 +58,9 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
     try {
       $group = civicrm_api3('Group', 'Create', $this->_apiParams);
       $this->fixName($group);
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update group type with name'
-        .$this->_apiParams['name'].', error from API Group Create: ' . $ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update group type with name'
+        .$this->_apiParams['name'].'. Error from API Group.Create: ' . $ex->getMessage() . '.');
     }
   }
 
@@ -73,7 +74,7 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
   public function getWithName($groupName) {
     try {
       return civicrm_api3('Group', 'Getsingle', array('name' => $groupName));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }

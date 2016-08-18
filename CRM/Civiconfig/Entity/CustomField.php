@@ -26,8 +26,7 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
   private function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name']) || !isset($params['custom_group_id'])
       || empty($params['custom_group_id'])) {
-      throw new Exception('When trying to create a Custom Field name and custom_group_id are
-      mandatory parameters and can not be empty in class CRM_Civiconfig_CustomField');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameters 'name' and/or 'custom_group_id' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
     if (isset($this->_apiParams['option_group'])) {
@@ -64,9 +63,9 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
       if (isset($params['option_group'])) {
         $this->fixOptionGroups($customField['values'], $params['option_group']);
       }
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('could not create or update custom field with name '.$this->_apiParams['name']
-        .' in custom group '.$this->_apiParams['custom_group_id'].' error from API CustomField Create: '.$ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update custom field with name '.$this->_apiParams['name']
+        .' in custom group '.$this->_apiParams['custom_group_id'].'. Error from API CustomField.Create: '.$ex->getMessage() . '.');
     }
   }
 
@@ -80,7 +79,7 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
   public function getWithNameCustomGroupId($name, $customGroupId) {
     try {
       return civicrm_api3('CustomField', 'Getsingle', array('name' => $name, 'custom_group_id' => $customGroupId));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }
@@ -125,12 +124,16 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
     try {
       $existingCustomFields = civicrm_api3('CustomField', 'Get', array('custom_group_id' => $customGroupId));
       foreach ($existingCustomFields['values'] as $existingId => $existingField) {
-        // if existing field not in config custom data, delete custom field
-        if (!isset($configCustomGroupData['fields'][$existingField['name']])) {
+        // If existing field not in config custom data, delete custom field
+        // Fix KL: check field['name'] if the custom groups array doesn't use names as keys
+        if (
+          !isset($configCustomGroupData['fields'][$existingField['name']]) &&
+          !in_array($existingField['name'], array_column($configCustomGroupData['fields'], 'name'))
+        ) {
           civicrm_api3('CustomField', 'Delete', array('id' => $existingId));
         }
       }
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
     return TRUE;

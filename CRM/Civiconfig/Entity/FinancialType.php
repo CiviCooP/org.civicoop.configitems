@@ -1,17 +1,16 @@
 <?php
 /**
- * Class for LocationType configuration
+ *  Class CRM_Civiconfig_Entity_FinancialType.
  *
- * @author Johan Vervloet (Chirojeugd-Vlaanderen vzw) <helpdesk@chiro.be>
- * @date 6 Jun 2016
+ * @author Kevin Levie (CiviCooP) <kevin.levie@civicoop.org>
  * @license AGPL-3.0
  */
-class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
+class CRM_Civiconfig_Entity_FinancialType extends CRM_Civiconfig_Entity {
 
   protected $_apiParams = array();
 
   /**
-   * CRM_Civiconfig_RelationshipType constructor.
+   * CRM_Civiconfig_Entity_FinancialType constructor.
    */
   public function __construct() {
     $this->_apiParams = array();
@@ -33,11 +32,11 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
   }
 
   /**
-   * Method to create or update a location type
+   * Method to create or update a financial type
    *
    * @param array $params
    * @return mixed
-   * @throws Exception when error from API LocationType Create
+   * @throws Exception if an API error occurs
    */
   public function create(array $params) {
     $this->validateCreateParams($params);
@@ -46,15 +45,15 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
       $this->_apiParams['id'] = $existing['id'];
     }
     try {
-      civicrm_api3('LocationType', 'Create', $this->_apiParams);
+      civicrm_api3('FinancialType', 'Create', $this->_apiParams);
     } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update location type with name '.$this->_apiParams['name']
-        .'. Error from API LocationType.Create: '.$ex->getMessage() . '.');
+      throw new \CRM_Civiconfig_EntityException('Could not create or update financial type with name '.$this->_apiParams['name']
+                                                .'. Error from API FinancialType.Create: '.$ex->getMessage() . '.');
     }
   }
 
   /**
-   * Function to get the location type with a name
+   * Function to get the financial type by name
    *
    * @param string $name
    * @return array|bool
@@ -63,7 +62,7 @@ class CRM_Civiconfig_Entity_LocationType extends CRM_Civiconfig_Entity {
    */
   public function getWithName($name) {
     try {
-      return civicrm_api3('LocationType', 'Getsingle',
+      return civicrm_api3('FinancialType', 'Getsingle',
         array('name' => $name));
     } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;

@@ -18,7 +18,7 @@ class CRM_Civiconfig_Entity_ContactType extends CRM_Civiconfig_Entity {
    */
   protected function validateCreateParams($params) {
     if (!isset($params['name']) || empty($params['name'])) {
-      throw new Exception('Missing mandatory param name in class CRM_Civiconfig_ContactType');
+      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
     }
     $this->_apiParams = $params;
   }
@@ -42,9 +42,9 @@ class CRM_Civiconfig_Entity_ContactType extends CRM_Civiconfig_Entity {
     try {
       civicrm_api3('ContactType', 'Create', $this->_apiParams);
       $this->updateNavigationMenuUrl();
-    } catch (CiviCRM_API3_Exception $ex) {
-      throw new Exception('Could not create or update contact type with name '.$this->_apiParams['name']
-        .', error from API ContactType Create: '.$ex->getMessage());
+    } catch (\CiviCRM_API3_Exception $ex) {
+      throw new \CRM_Civiconfig_EntityException('Could not create or update contact type with name '.$this->_apiParams['name']
+        .'. Error from API ContactType.Create: '.$ex->getMessage().'.');
     }
   }
 
@@ -91,7 +91,7 @@ class CRM_Civiconfig_Entity_ContactType extends CRM_Civiconfig_Entity {
   public function getWithName($contactTypeName) {
     try {
       return civicrm_api3('ContactType', 'Getsingle', array('name' => $contactTypeName));
-    } catch (CiviCRM_API3_Exception $ex) {
+    } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
   }

@@ -1,15 +1,17 @@
 <?php
 /**
- * IidaConfig.Update API Updates the configuration of IIDA with new settings
- *
- * @param array $params
- * @return array API result descriptor
- * @see civicrm_api3_create_success
- * @see civicrm_api3_create_error
- * @throws API_Exception
+ * IidaConfig.Update API method.
+ * Kept for backwards compatibility: calls are forwarded to the Civiconfig.LoadJson API.
  */
-function civicrm_api3_iida_config_update($params) {
-  CRM_Civiconfig_Config::singleton();
-  return civicrm_api3_create_success(array(ts('Updated IIDA CiviCRM installation')), $params, 'IidaConfig', 'Update');
-}
 
+require_once __DIR__ . '/../Civiconfig/LoadJson.php';
+
+/**
+ * @param array $params API call parameters
+ * @return mixed API call results
+ * @deprecated
+ */
+function civicrm_api3_iida_config_update($params = []) {
+
+  return civicrm_api3_civiconfig_load_json($params);
+}
