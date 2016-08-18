@@ -45,7 +45,11 @@ class CRM_Civiconfig_Entity_OptionValue extends CRM_Civiconfig_Entity {
     if (isset($existing['id'])) {
       $this->_apiParams['id'] = $existing['id'];
     }
-    $this->_apiParams['is_active'] = 1;
+    if (!isset($this->_apiParams['is_active'])) {
+        // If is_active is not explicitely given, assume that the option value
+        // should be active.
+        $this->_apiParams['is_active'] = 1;
+    }
     $this->_apiParams['is_reserved'] = 1;
     if (!isset($this->_apiParams['label'])) {
       $this->_apiParams['label'] = ucfirst($this->_apiParams['name']);
