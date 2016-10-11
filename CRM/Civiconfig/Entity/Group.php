@@ -45,6 +45,9 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
     }
     $this->validateCreateParams($params);
     $existing = $this->getWithName($this->_apiParams['name']);
+    if ($existing['api.SavedSearch.get']['count'] > 0) {
+      $existingSearch = CRM_Utils_Array::first($existing['api.SavedSearch.get']['values']);
+    }
     if (isset($existing['id'])) {
       $this->_apiParams['id'] = $existing['id'];
       // Some exception handling here would be nice:
@@ -55,6 +58,10 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
       $this->handleSavedSearch($formValues);
     }
     $this->sanitizeParams();
+    if (!array_diff($this->_apiParams, $existing) && $formValues == $existingSearch['form_values']) {
+      // No new things. We can return to save time.
+      return;
+    }
     try {
       $group = civicrm_api3('Group', 'Create', $this->_apiParams);
       $this->fixName($group);
@@ -73,7 +80,10 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    */
   public function getWithName($groupName) {
     try {
-      return civicrm_api3('Group', 'Getsingle', array('name' => $groupName));
+      return civicrm_api3('Group', 'getsingle', array(
+        'name' => $groupName,
+        'api.SavedSearch.get' => array('id' => '$value.saved_search_id'),
+      ));
     } catch (\CiviCRM_API3_Exception $ex) {
       return FALSE;
     }
@@ -81,24 +91,24 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
 
   /**
    * Creates or updates a saved search.
-   * 
+   *
    * A saved search has no name. So I will identify it by the ID of the
    * smart group that uses the search. I assume that a saved search is
    * used by at most one smart group.
-   * 
+   *
    * If the saved search is meant for a new smart group, just leave $groupId
    * empty.
-   * 
+   *
    * The saved_search_id will be assigned to the API params.
-   * 
+   *
    * If $formValues is empty, nothing will happen.
    *
    * @param array $formValues
    * @param int $groupId ID of existing smart group for the saved search.
-   * 
+   *
    * @throws ApiException
    */
-  public function handleSavedSearch($formValues, $groupId = NULL) {
+  protected function handleSavedSearch($formValues, $groupId = NULL) {
     if (empty($formValues)) {
       return;
     }
