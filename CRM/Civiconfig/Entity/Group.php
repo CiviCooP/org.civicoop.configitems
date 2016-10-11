@@ -58,7 +58,8 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
       $this->handleSavedSearch($formValues);
     }
     $this->sanitizeParams();
-    if (!array_diff($this->_apiParams, $existing) && $formValues == $existingSearch['form_values']) {
+    if (is_array($existing) && !array_diff($this->_apiParams, $existing)
+      && $formValues == $existingSearch['form_values']) {
       // No new things. We can return to save time.
       return;
     }
