@@ -9,28 +9,11 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = array();
-
   /**
    * CRM_Civiconfig_CustomGroup constructor.
    */
   public function __construct() {
-    $this->_apiParams = array();
-  }
-
-  /**
-   * Method to validate params for create
-   *
-   * @param $params
-   * @throws Exception
-   */
-  private function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name']) || !isset($params['extends']) ||
-      empty($params['extends'])) {
-      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' and/or 'extends' in class " . get_class()  . ".");
-    }
-    $this->buildApiParams($params);
+    parent::__construct('CustomGroup');
   }
 
   /**
@@ -42,139 +25,112 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
    */
   public function create(array $params) {
     $fieldParamsArray = $params['fields'];
+    $id = parent::create($params);
 
-    $this->validateCreateParams($params);
-    $existing = $this->getWithName($this->_apiParams['name']);
-    if (isset($existing['id'])) {
-      $this->_apiParams['id'] = $existing['id'];
-    }
-    if (!isset($this->_apiParams['title']) || empty($this->_apiParams['title'])) {
-      $this->_apiParams['title'] = CRM_Civiconfig_Utils::buildLabelFromName($this->_apiParams['name']);
-    }
-    try {
-      $customGroup = civicrm_api3('CustomGroup', 'Create', $this->_apiParams);
-    } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update custom group with name ' . $this->_apiParams['name']
-        . ' to extend ' . $this->_apiParams['extends'] . '. Error from API CustomGroup.Create: ' .
-        $ex->getMessage() . ", parameters : " . implode(";", $this->_apiParams) . '.');
-    }
-
-    $created = $customGroup['values'][$customGroup['id']];
+    $customFieldCreator = new CRM_Civiconfig_Entity_CustomField();
     foreach ($fieldParamsArray as $customFieldData) {
-      $customFieldData['custom_group_id'] = $created['id'];
-      $customField = new CRM_Civiconfig_Entity_CustomField();
-      $customField->create($customFieldData);
+      $customFieldData['custom_group_id'] = $id;
+      $customFieldCreator->create($customFieldData);
     }
     // remove custom fields that are still on install but no longer in config
-    CRM_Civiconfig_Entity_CustomField::removeUnwantedCustomFields($created['id'], $params);    
+    CRM_Civiconfig_Entity_CustomField::removeUnwantedCustomFields($id, $params);
 
-    return $created;
+    return $id;
   }
 
   /**
-   * Method to get custom group with name
+   * Manipulate $params before entity creation.
    *
-   * @param string $name
-   * @return array|bool
+   * TODO: This function is too complex and can probably be refactored.
+   *
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
    */
-  public function getWithName($name) {
-    try {
-      return civicrm_api3('CustomGroup', 'Getsingle', array('name' => $name));
-    } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
+  protected function prepareParams(array &$params, array $existing = []) {
+    if (empty($params['title'])) {
+      $params['title'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
     }
-  }
+    parent::prepareParams($params, $existing);
 
-  /**
-   * Method to build api param list
-   *
-   * @param array $params
-   */
-  protected function buildApiParams($params) {
-    // This can probably be refactored as well.
-    $this->_apiParams = array();
-    foreach ($params as $name => $value) {
-      if ($name != 'fields') {
-        $this->_apiParams[$name] = $value;
-      }
-    }
-    switch ($this->_apiParams['extends']) {
+    unset($params['fields']);
+
+    switch ($params['extends']) {
       case "Activity":
-        if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
-          if (is_array($this->_apiParams['extends_entity_column_value'])) {
-            foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
+        if (!empty($params['extends_entity_column_value'])) {
+          if (is_array($params['extends_entity_column_value'])) {
+            foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $activityType = new CRM_Civiconfig_Entity_ActivityType();
-              $found = $activityType->getWithNameAndOptionGroupId($extendsValue, $activityType->getOptionGroupId());
+              $found = $activityType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $this->_apiParams['extends_entity_column_value'][] = $found['value'];
+                $params['extends_entity_column_value'][] = $found['value'];
               }
               unset ($activityType);
             }
           } else {
             $activityType = new CRM_Civiconfig_Entity_ActivityType();
-            $found = $activityType->getWithNameAndOptionGroupId($this->_apiParams['extends_entity_column_value'], $activityType->getOptionGroupId());
+            $found = $activityType->getExisting(['name' => $params['extends_entity_column_value']]);
             if (isset($found['value'])) {
-              $this->_apiParams['extends_entity_column_value'] = $found['value'];
+              $params['extends_entity_column_value'] = $found['value'];
             }
           }
         }
         break;
       case "Membership":
-        if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
-          if (is_array($this->_apiParams['extends_entity_column_value'])) {
-            foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
+        if (!empty($params['extends_entity_column_value'])) {
+          if (is_array($params['extends_entity_column_value'])) {
+            foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $membershipType = new CRM_Civiconfig_Entity_MembershipType();
-              $found = $membershipType->getWithName($extendsValue);
+              $found = $membershipType->getExisting(['name' => $extendsValue]);
               if (isset($found['id'])) {
-                $this->_apiParams['extends_entity_column_value'][] = $found['id'];
+                $params['extends_entity_column_value'][] = $found['id'];
               }
               unset ($membershipType);
             }
           } else {
             $membershipType = new CRM_Civiconfig_Entity_MembershipType();
-            $found = $membershipType->getWithName($this->_apiParams['extends_entity_column_value']);
+            $found = $membershipType->getExisting(['name' => $params['extends_entity_column_value']]);
             if (isset($found['id'])) {
-              $this->_apiParams['extends_entity_column_value'] = $found['id'];
+              $params['extends_entity_column_value'] = $found['id'];
             }
           }
         }
         break;
       case "Relationship":
-        if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
-          if (is_array($this->_apiParams['extends_entity_column_value'])) {
-            foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
+        if (!empty($params['extends_entity_column_value'])) {
+          if (is_array($params['extends_entity_column_value'])) {
+            foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
-              $found = $relationshipType->getWithNameAb($extendsValue);
+              $found = $relationshipType->getExisting(['name_a_b' => $extendsValue]);
               if (isset($found['id'])) {
-                $this->_apiParams['extends_entity_column_value'][] = $found['id'];
+                $params['extends_entity_column_value'][] = $found['id'];
               }
               unset ($relationshipType);
             }
           } else {
             $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
-            $found = $relationshipType->getWithNameAb($this->_apiParams['extends_entity_column_value']);
+            $found = $relationshipType->getExisting(['name_a_b' => $params['extends_entity_column_value']]);
             if (isset($found['id'])) {
-              $this->_apiParams['extends_entity_column_value'] = $found['id'];
+              $params['extends_entity_column_value'] = $found['id'];
             }
           }
         }
         break;
       case "ParticipantEventType":
-        if (isset($this->_apiParams['extends_entity_column_value']) && !empty($this->_apiParams['extends_entity_column_value'])) {
-          if (is_array($this->_apiParams['extends_entity_column_value'])) {
-            foreach ($this->_apiParams['extends_entity_column_value'] as $extendsValue) {
+        if (!empty($params['extends_entity_column_value'])) {
+          if (is_array($params['extends_entity_column_value'])) {
+            foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $eventType = new CRM_Civiconfig_Entity_EventType();
-              $found = $eventType->getWithNameAndOptionGroupId($extendsValue, $eventType->getOptionGroupId());
+              $found = $eventType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $this->_apiParams['extends_entity_column_value'][] = $found['value'];
+                $params['extends_entity_column_value'][] = $found['value'];
               }
               unset ($eventType);
             }
           } else {
             $eventType = new CRM_Civiconfig_Entity_EventType();
-            $found = $eventType->getWithNameAndOptionGroupId($this->_apiParams['extends_entity_column_value'], $eventType->getOptionGroupId());
+            $found = $eventType->getExisting(['name' => $params['extends_entity_column_value']]);
             if (isset($found['value'])) {
-              $this->_apiParams['extends_entity_column_value'] = $found['value'];
+              $params['extends_entity_column_value'] = $found['value'];
             }
           }
         }

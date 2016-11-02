@@ -7,30 +7,18 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = array();
-
   /**
    * CRM_Civiconfig_Group constructor.
    */
   public function __construct() {
-    $this->_apiParams = array();
-  }
-  /**
-   * Method to validate params for create
-   *
-   * @param $params
-   * @throws Exception when missing mandatory params
-   */
-  private function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name'])) {
-      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
-    }
-    $this->_apiParams = $params;
+    parent::__construct('Group');
   }
 
   /**
-   * Method to create or update group
+   * Method to create or update group.
+   *
+   * The way I handle smart group, is rather messy, mainly because of PR #8.
+   * I completely replaced the 'create' function.
    *
    * @param array $params
    * @return void
@@ -38,51 +26,64 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    * @access public
    */
   public function create(array $params) {
+    // Hack for smart groups:
     if (!empty($params['form_values'])) {
-      // Hack for smart groups.
       $formValues = $params['form_values'];
       unset($params['form_values']);
     }
+    else{
+      $formValues = NULL;
+    }
+
+    // This part is rather standard:
     $this->validateCreateParams($params);
-    $existing = $this->getWithName($this->_apiParams['name']);
+    $existing = $this->getExisting($params);
+
+    // Create or update saved search for smart group.
+    if (!empty($formValues)) {
+      $savedSearchId = $this->handleSavedSearch($formValues, $existing['id']);
+      $params['saved_search_id'] = $savedSearchId;
+    }
+
+    // Standard call: prepare params.
+    $this->prepareParams($params, $existing);
+
+    // Only rebuild group if really needed (see PR #8).
     if ($existing['api.SavedSearch.get']['count'] > 0) {
       $existingSearch = CRM_Utils_Array::first($existing['api.SavedSearch.get']['values']);
     }
-    if (isset($existing['id'])) {
-      $this->_apiParams['id'] = $existing['id'];
-      // Some exception handling here would be nice:
-      $this->handleSavedSearch($formValues, $existing['id']);
-    }
     else {
-      // Some exception handling here would be nice:
-      $this->handleSavedSearch($formValues);
+      $existingSearch = NULL;
     }
-    $this->sanitizeParams();
-    if (is_array($existing) && !array_diff($this->_apiParams, $existing)
+    if (is_array($existing) && !array_diff($params, $existing)
       && $formValues == $existingSearch['form_values']) {
       // No new things. We can return to save time.
       return;
     }
     try {
-      $group = civicrm_api3('Group', 'Create', $this->_apiParams);
-      $this->fixName($group);
+      $group = civicrm_api3('Group', 'Create', $params);
+      $this->fixName($group, $params['name']);
+      return $group['id'];
     } catch (\CiviCRM_API3_Exception $ex) {
       throw new \CRM_Civiconfig_EntityException('Could not create or update group type with name'
-        .$this->_apiParams['name'].'. Error from API Group.Create: ' . $ex->getMessage() . '.');
+        .$params['name'].'. Error from API Group.Create: ' . $ex->getMessage() . '.');
     }
   }
 
   /**
-   * Method to get the group with a name
+   * Function to find an existing group based on the parameters.
    *
-   * @param string $groupName
+   * Overridden so that it also returns the saved search - if any.
+   *
+   * @param array $params
    * @return array|bool
    * @access public
+   * @static
    */
-  public function getWithName($groupName) {
+  public function getExisting(array $params) {
     try {
       return civicrm_api3('Group', 'getsingle', array(
-        'name' => $groupName,
+        'name' => $params['name'],
         'api.SavedSearch.get' => array('id' => '$value.saved_search_id'),
       ));
     } catch (\CiviCRM_API3_Exception $ex) {
@@ -100,18 +101,19 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    * If the saved search is meant for a new smart group, just leave $groupId
    * empty.
    *
-   * The saved_search_id will be assigned to the API params.
+   * The saved_search_id will be returned.
    *
    * If $formValues is empty, nothing will happen.
    *
    * @param array $formValues
    * @param int $groupId ID of existing smart group for the saved search.
+   * @return int Saved Search ID.
    *
    * @throws ApiException
    */
   protected function handleSavedSearch($formValues, $groupId = NULL) {
     if (empty($formValues)) {
-      return;
+      return NULL;
     }
     $params = array();
     if (!empty($groupId)) {
@@ -123,32 +125,52 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
     }
     $params['form_values'] = $formValues;
     $savedSearchResult = civicrm_api3('SavedSearch', 'create', $params);
-    $this->_apiParams['saved_search_id'] = $savedSearchResult['id'];
+    return $savedSearchResult['id'];
   }
 
   /**
-   * Method to sanitize params for group create api
+   * Manipulate $params before entity creation.
    *
-   * @access private
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
    */
-  private function sanitizeParams() {
-    if (!isset($this->_apiParams['is_active'])) {
-      $this->_apiParams['is_active'] = 1;
+  protected function prepareParams(array &$params, array $existing = []) {
+    parent::prepareParams($params, $existing);
+
+    if (!isset($params['is_active'])) {
+      $params['is_active'] = 1;
     }
-    if (isset($this->_apiParams['group_type'])) {
-      $this->_apiParams['group_type'] = CRM_Core_DAO::VALUE_SEPARATOR
-        .$this->_apiParams['group_type'].CRM_Core_DAO::VALUE_SEPARATOR;
+    if (isset($params['group_type'])) {
+      $params['group_type'] = CRM_Utils_Array::implodePadded($params['group_type']);
     }
-    if (empty($this->_apiParams['title']) || !isset($this->_apiParams['title'])) {
-      $this->_apiParams['title'] = CRM_Civiconfig_Utils::buildLabelFromName($this->_apiParams['name']);
+    if (empty($params['title'])) {
+      $params['title'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
     }
     // if parent is set, retrieve parent number with name and set parents
-    if (isset($this->_apiParams['parent'])) {
-      $parentGroup = $this->getWithName($this->_apiParams['parent']);
+    if (isset($params['parent'])) {
+      $parentGroup = $this->getWithName($params['parent']);
       if ($parentGroup) {
-        $this->_apiParams['parents'] = $parentGroup['id'];
+        $params['parents'] = $parentGroup['id'];
       }
-      unset($this->_apiParams['parent']);
+      unset($params['parent']);
+    }
+  }
+
+  /**
+   * Method to get the group with a name
+   *
+   * @param string $groupName
+   * @return array|bool
+   * @access public
+   */
+  private function getWithName($groupName) {
+    try {
+      return civicrm_api3('Group', 'getsingle', array(
+        'name' => $groupName,
+        'api.SavedSearch.get' => array('id' => '$value.saved_search_id'),
+      ));
+    } catch (\CiviCRM_API3_Exception $ex) {
+      return FALSE;
     }
   }
 
@@ -157,14 +179,15 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
    * id to be added at the end of name which kind of defeats the idea of having the same name in each install
    * Core bug https://issues.civicrm.org/jira/browse/CRM-14062, resolved in 4.4.4
    *
-   * @param $group
+   * @param string $group
+   * @param string name
    * @access private
    */
   private function fixName($group) {
     if (CRM_Core_BAO_Domain::version() < 4.5) {
       $query = 'UPDATE civicrm_group SET name = %1 WHERE id = %2';
       $queryParams = array(
-        1 => array($this->_apiParams['name'], 'String'),
+        1 => array($name, 'String'),
         2 => array($group['id'], 'Integer'));
       CRM_Core_DAO::executeQuery($query, $queryParams);
     }

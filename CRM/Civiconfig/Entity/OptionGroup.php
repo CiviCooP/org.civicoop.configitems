@@ -8,54 +8,50 @@
  */
 class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
 
-  protected $_apiParams = array();
-
   /**
    * CRM_Civiconfig_OptionGroup constructor.
    */
   public function __construct() {
-    $this->_apiParams = array();
+    parent::__construct('OptionGroup');
   }
+
   /**
-   * Method to validate params for create
+   * Manipulate $params before entity creation.
    *
-   * @param $params
-   * @throws Exception when missing mandatory params
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
    */
-  protected function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name'])) {
-      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
+  protected function prepareParams(array &$params, array $existing = []) {
+    if (!isset($params['is_active'])) {
+      // If is_active is not explicitly given, assume that the option value
+      // should be active.
+      $params['is_active'] = 1;
     }
-    $this->_apiParams = $params;
+    $params['is_reserved'] = 1;
+    if (!isset($params['title'])) {
+      $params['title'] = ucfirst($params['name']);
+    }
+    parent::prepareParams($params, $existing);
   }
 
   /**
    * Method to create or update option group
    *
    * @param $params
-   * @return array
+   * @return int id of created/updated entity
    * @throws Exception when error in API Option Group Create
    */
   public function create(array $params) {
-    $this->validateCreateParams($params);
-    $existing = $this->getWithName($this->_apiParams['name']);
-    if (isset($existing['id'])) {
-      $this->_apiParams['id'] = $existing['id'];
-    }
-    $this->_apiParams['is_active'] = 1;
-    $this->_apiParams['is_reserved'] = 1;
-    if (!isset($this->_apiParams['title'])) {
-      $this->_apiParams['title'] = ucfirst($this->_apiParams['name']);
-    }
-    try {
-      $optionGroup = civicrm_api3('OptionGroup', 'Create', $this->_apiParams);
-      if (isset($params['option_values'])) {
-        $this->processOptionValues($optionGroup['id'], $params['option_values']);
+    $id = parent::create($params);
+    if (isset($params['option_values'])) {
+      try {
+        $this->processOptionValues($id, $params['option_values']);
+      } catch (\CiviCRM_API3_Exception $ex) {
+        throw new \CRM_Civiconfig_EntityException('Could not create or update option_group with name '
+          . $params['name'] . '. Error from API OptionGroup.Create: ' . $ex->getMessage() . '.');
       }
-    } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update option_group with name'
-        .$this->_apiParams['name'].'. Error from API OptionGroup.Create: ' . $ex->getMessage() . '.');
     }
+    return $id;
   }
 
   /**
@@ -65,25 +61,10 @@ class CRM_Civiconfig_Entity_OptionGroup extends CRM_Civiconfig_Entity {
    * @param array $optionValueParams
    */
   protected function processOptionValues($optionGroupId, $optionValueParams) {
+    $optionValueCreator = new CRM_Civiconfig_Entity_OptionValue();
     foreach ($optionValueParams as $optionValueName => $params) {
       $params['option_group_id'] = $optionGroupId;
-      $optionValue = new CRM_Civiconfig_Entity_OptionValue();
-      $optionValue->create($params);
-    }
-  }
-
-  /**
-   * Function to get the option group with name
-   *
-   * @param string $name
-   * @return array|boolean
-   */
-  public function getWithName($name) {
-    $params = array('name' => $name);
-    try {
-      return civicrm_api3('OptionGroup', 'Getsingle', $params);
-    } catch (\CiviCRM_API3_Exception $ex) {
-      return array();
+      $optionValueCreator->create($params);
     }
   }
 }
