@@ -35,11 +35,6 @@ class CRM_Civiconfig_Entity_OptionValue extends CRM_Civiconfig_Entity {
    * @param array $existing existing entity (if available)
    */
   protected function prepareParams(array &$params, array $existing = []) {
-    if (!isset($params['is_active'])) {
-        // If is_active is not explicitly given, assume that the option value
-        // should be active.
-        $params['is_active'] = 1;
-    }
     $params['is_reserved'] = 1;
     if (!isset($params['label'])) {
       $params['label'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);

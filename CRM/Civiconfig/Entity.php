@@ -101,5 +101,11 @@ abstract class CRM_Civiconfig_Entity {
     if (isset($existing['id'])) {
       $params['id'] = $existing['id'];
     }
+    if (!isset($params['is_active'])) {
+        // if is_active is not explicitly given, assume that the entity is active.
+        // the entities 'setting' and 'tag' don't have an 'is_active' field, but I don't think
+        // it hurts that the param is set.
+        $params['is_active'] = 1;
+    }
   }
 }

@@ -138,9 +138,6 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
   protected function prepareParams(array &$params, array $existing = []) {
     parent::prepareParams($params, $existing);
 
-    if (!isset($params['is_active'])) {
-      $params['is_active'] = 1;
-    }
     if (isset($params['group_type'])) {
       $params['group_type'] = CRM_Utils_Array::implodePadded($params['group_type']);
     }

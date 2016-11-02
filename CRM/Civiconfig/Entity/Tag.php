@@ -29,9 +29,6 @@ class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
       }
       unset($params['parent']);
     }
-    if (!isset($params['is_active'])) {
-      $params['is_active'] = 1;
-    }
     if (empty($params['description'])) {
       $params['description'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
     }
