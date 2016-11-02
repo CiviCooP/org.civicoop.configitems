@@ -70,15 +70,16 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
 
   /**
    * Method to get the existing custom field
+   * If no existing entity is found, an empty array is returned.
    *
    * @param array $params
-   * @return array|bool
+   * @return array
    */
   public function getExisting(array $params) {
     try {
       return civicrm_api3('CustomField', 'Getsingle', array('name' => $params['name'], 'custom_group_id' => $params['custom_group_id']));
     } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
+      return [];
     }
   }
 

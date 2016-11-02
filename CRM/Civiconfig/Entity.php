@@ -24,10 +24,11 @@ abstract class CRM_Civiconfig_Entity {
   /**
    * Function to find an existing entity based on the entity's parameters.
    *
+   * If no existing entity is found, an empty array is returned.
    * This default implementation searches on the name, but you can override it.
    *
    * @param array $params
-   * @return array|bool
+   * @return array
    * @access public
    * @static
    */
@@ -35,7 +36,7 @@ abstract class CRM_Civiconfig_Entity {
     try {
       return civicrm_api3($this->entity, 'Getsingle', array('name'=> $params['name']));
     } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
+      return [];
     }
   }
 

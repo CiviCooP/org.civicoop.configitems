@@ -73,10 +73,11 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
   /**
    * Function to find an existing group based on the parameters.
    *
+   * If no existing entity is found, an empty array is returned.
    * Overridden so that it also returns the saved search - if any.
    *
    * @param array $params
-   * @return array|bool
+   * @return array
    * @access public
    * @static
    */
@@ -87,7 +88,7 @@ class CRM_Civiconfig_Entity_Group extends CRM_Civiconfig_Entity {
         'api.SavedSearch.get' => array('id' => '$value.saved_search_id'),
       ));
     } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
+      return [];
     }
   }
 
