@@ -51,7 +51,7 @@ class CRM_Civiconfig_Entity_OptionValue extends CRM_Civiconfig_Entity {
   public function getExisting(array $params) {
     $params2 = array(
       'name' => $params['name'],
-      'option_group_id' => $params['optionGroupId']
+      'option_group_id' => $params['option_group_id']
     );
     try {
       return civicrm_api3('OptionValue', 'Getsingle', $params2);
