@@ -8,14 +8,11 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_CivicrmSetting extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = [];
-
   /**
-   * CRM_Civiconfig_Entity_CivicrmSetting constructor.
+   * CRM_Civiconfig_CivicrmSetting constructor.
    */
   public function __construct() {
-    $this->_apiParams = [];
+    parent::__construct('Setting');
   }
 
   /**
@@ -31,10 +28,9 @@ class CRM_Civiconfig_Entity_CivicrmSetting extends CRM_Civiconfig_Entity {
     if (!is_array($paramsArray) || count($paramsArray) == 0) {
       return FALSE;
     }
-    $this->_apiParams = $paramsArray;
 
     try {
-      civicrm_api3('Setting', 'create', $this->_apiParams);
+      civicrm_api3('Setting', 'create', $paramsArray);
     } catch (\CiviCRM_API3_Exception $ex) {
       throw new \CRM_Civiconfig_EntityException('Could not create or update CiviCRM settings. Error from API Setting.Create: ' . $ex->getMessage() . '.');
     }

@@ -7,62 +7,32 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = array();
-
   /**
    * CRM_Civiconfig_Tag constructor.
    */
   public function __construct() {
-    $this->_apiParams = array();
+    parent::__construct('Tag');
   }
 
   /**
-   * Method to validate params for create
+   * Manipulate $params before entity creation.
    *
-   * @param array $params
-   * @throws Exception when mandatory param not found
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
    */
-  private function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name'])) {
-      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
-    }
-    $this->_apiParams = $params;
+  protected function prepareParams(array &$params, array $existing = []) {
     // if parent is set, retrieve parent number with name and set parents
-    if (isset($this->_apiParams['parent'])) {
-      $parentTag = $this->getWithName($this->_apiParams['parent']);
+    if (isset($params['parent'])) {
+      $parentTag = $this->getWithName($params['parent']);
       if ($parentTag) {
-        $this->_apiParams['parent_id'] = $parentTag['id'];
+        $params['parent_id'] = $parentTag['id'];
       }
-      unset($this->_apiParams['parent']);
+      unset($params['parent']);
     }
-
-  }
-  /**
-   * Method to create or update a tag
-   *
-   * @param array $params
-   * @return mixed
-   * @throws Exception when error from API Tag Create
-   */
-  public function create(array $params) {
-    $this->validateCreateParams($params);
-    $existingTag = $this->getWithName($this->_apiParams['name']);
-    if (isset($existingTag['id'])) {
-      $this->_apiParams['id'] = $existingTag['id'];
+    if (empty($params['description'])) {
+      $params['description'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
     }
-    if (!isset($this->_apiParams['is_active'])) {
-      $this->_apiParams['is_active'] = 1;
-      if (empty($this->_apiParams['description']) || !isset($this->_apiParams['description'])) {
-        $this->_apiParams['description'] = CRM_Civiconfig_Utils::buildLabelFromName($this->_apiParams['name']);
-      }
-    }
-    try {
-      civicrm_api3('Tag', 'Create', $this->_apiParams);
-    } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update tag type with name'
-        .$this->_apiParams['name'].'. Error from API Tag.Create: ' . $ex->getMessage() . '.');
-    }
+    parent::prepareParams($params, $existing);
   }
 
   /**
@@ -73,7 +43,7 @@ class CRM_Civiconfig_Entity_Tag extends CRM_Civiconfig_Entity {
    * @access public
    * @static
    */
-  public function getWithName($name) {
+  protected function getWithName($name) {
     try {
       return civicrm_api3('Tag', 'Getsingle', array('name' => $name));
     } catch (\CiviCRM_API3_Exception $ex) {

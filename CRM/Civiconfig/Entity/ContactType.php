@@ -7,61 +7,54 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_ContactType extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = array();
-
   /**
-   * Method to validate params for create
-   *
-   * @param $params
-   * @throws Exception when missing mandatory params
+   * CRM_Civiconfig_ContactType constructor.
    */
-  protected function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name'])) {
-      throw new \CRM_Civiconfig_EntityException("Missing mandatory parameter 'name' in class " . get_class() . ".");
-    }
-    $this->_apiParams = $params;
+  public function __construct() {
+    parent::__construct('ContactType');
   }
 
   /**
-   * Method to create contact type
+   * Manipulate $params before entity creation.
+   *
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
+   */
+  protected function prepareParams(array &$params, array $existing = []) {
+    if (empty($params['label'])) {
+      $params['label'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
+    }
+    parent::prepareParams($params, $existing);
+  }
+
+  /**
+   * Method to create contact type.
    *
    * @param array $params
-   * @return mixed
+   * @return int $id ID of created contact type
    * @throws Exception when error from API ContactType Create
    */
   public function create(array $params) {
-    $this->validateCreateParams($params);
-    $existing = $this->getWithName($this->_apiParams['name']);
-    if (isset($existing['id'])) {
-      $this->_apiParams['id'] = $existing['id'];
-    }
-    if (!isset($this->_apiParams['label']) || empty($this->_apiParams['label'])) {
-      $this->_apiParams['label'] = CRM_Civiconfig_Utils::buildLabelFromName($this->_apiParams['name']);
-    }
-    try {
-      civicrm_api3('ContactType', 'Create', $this->_apiParams);
-      $this->updateNavigationMenuUrl();
-    } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update contact type with name '.$this->_apiParams['name']
-        .'. Error from API ContactType.Create: '.$ex->getMessage().'.');
-    }
+    $id = parent::create($params);
+    $this->updateNavigationMenuUrl($params);
+    return $id;
   }
 
   /**
    * Method to check if there is a navigation menu option for the contact type
    * and if so, update name and url
    *
+   * @param array $params
    * @access private
    */
-  private function updateNavigationMenuUrl() {
+  private function updateNavigationMenuUrl($params) {
     // check if there is a "New <label>" entry in the navigation table
     $query = "SELECT * FROM civicrm_navigation WHERE label = %1";
-    $label = "New ".$this->_apiParams['label'];
+    $label = "New ".$params['label'];
     $dao = CRM_Core_DAO::executeQuery($query, array(1 => array($label, 'String')));
     $validParent = array("New Organization", "New Individual", "New Household");
-    $newUrl = 'civicrm/contact/add&ct=Organization&cst='.$this->_apiParams['name'].'&reset=1';
-    $newName = "New ".$this->_apiParams['name'];
+    $newUrl = 'civicrm/contact/add&ct=Organization&cst='.$params['name'].'&reset=1';
+    $newName = "New ".$params['name'];
     while ($dao->fetch()) {
       // parent should be either New Organization, New Individual or New Household
       if (isset($dao->parent_id)) {
@@ -79,21 +72,4 @@ class CRM_Civiconfig_Entity_ContactType extends CRM_Civiconfig_Entity {
       }
     }
   }
-
-  /**
-   * Method to get contact sub type with name
-   *
-   * @param string $contactTypeName
-   * @return array|bool
-   * @access public
-   * @static
-   */
-  public function getWithName($contactTypeName) {
-    try {
-      return civicrm_api3('ContactType', 'Getsingle', array('name' => $contactTypeName));
-    } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
-    }
-  }
-
 }

@@ -7,14 +7,11 @@
  * @license AGPL-3.0
  */
 class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
-
-  protected $_apiParams = array();
-
   /**
    * CRM_Civiconfig_CustomField constructor.
    */
   public function __construct() {
-    $this->_apiParams = array();
+    parent::__construct('CustomField');
   }
 
   /**
@@ -23,64 +20,66 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
    * @param array $params
    * @throws Exception when missing mandatory params
    */
-  private function validateCreateParams($params) {
-    if (!isset($params['name']) || empty($params['name']) || !isset($params['custom_group_id'])
-      || empty($params['custom_group_id'])) {
+  public function validateCreateParams($params) {
+    parent::validateCreateParams($params);
+    if (empty($params['custom_group_id'])) {
       throw new \CRM_Civiconfig_EntityException("Missing mandatory parameters 'name' and/or 'custom_group_id' in class " . get_class() . ".");
     }
-    $this->_apiParams = $params;
-    if (isset($this->_apiParams['option_group'])) {
-      $this->_apiParams['option_type'] = 0;
+  }
+
+  /**
+   * Manipulate $params before entity creation.
+   *
+   * @param array $params params that will be used for entity creation
+   * @param array $existing existing entity (if available)
+   */
+  protected function prepareParams(array &$params, array $existing = []) {
+    if (isset($params['option_group'])) {
+      $params['option_type'] = 0;
       $optionGroup = new CRM_Civiconfig_Entity_OptionGroup();
-      $found = $optionGroup->getWithName($this->_apiParams['option_group']);
+      $found = $optionGroup->getExisting(['name' => $params['option_group']]);
       if (!empty($found)) {
-        $this->_apiParams['option_group_id'] = $found['id'];
+        $params['option_group_id'] = $found['id'];
       } else {
-        $created = $optionGroup->create(array('name' => $this->_apiParams['option_group']));
-        $this->_apiParams['option_group_id'] = $created['id'];
+        $id = $optionGroup->create(array('name' => $params['option_group']));
+        $params['option_group_id'] = $id;
       }
-      unset($this->_apiParams['option_group']);
+      unset($params['option_group']);
     }
+    if (empty($params['label'])) {
+      $params['label'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
+    }
+    parent::prepareParams($params, $existing);
   }
 
   /**
    * Method to create or update custom field
    *
    * @param array $params
+   * @return int $id ID of created custom field.
+   *
    * @throws Exception when error from API CustomField Create
    */
   public function create(array $params) {
-    $this->validateCreateParams($params);
-    $existing = $this->getWithNameCustomGroupId($this->_apiParams['name'], $this->_apiParams['custom_group_id']);
-    if (isset($existing['id'])) {
-      $this->_apiParams['id'] = $existing['id'];
+    $id = parent::create($params);
+    if (isset($params['option_group'])) {
+      $this->fixOptionGroups($id, $params['option_group']);
     }
-    if (!isset($this->_apiParams['label']) || empty($this->_apiParams['label'])) {
-      $this->_apiParams['label'] = CRM_Civiconfig_Utils::buildLabelFromName($this->_apiParams['name']);
-    }
-    try {
-      $customField = civicrm_api3('CustomField', 'Create', $this->_apiParams);
-      if (isset($params['option_group'])) {
-        $this->fixOptionGroups($customField['values'], $params['option_group']);
-      }
-    } catch (\CiviCRM_API3_Exception $ex) {
-      throw new \CRM_Civiconfig_EntityException('Could not create or update custom field with name '.$this->_apiParams['name']
-        .' in custom group '.$this->_apiParams['custom_group_id'].'. Error from API CustomField.Create: '.$ex->getMessage() . '.');
-    }
+    return $id;
   }
 
   /**
-   * Method to get custom field with name and custom group id
+   * Method to get the existing custom field
+   * If no existing entity is found, an empty array is returned.
    *
-   * @param string $name
-   * @param integer $customGroupId
-   * @return array|bool
+   * @param array $params
+   * @return array
    */
-  public function getWithNameCustomGroupId($name, $customGroupId) {
+  public function getExisting(array $params) {
     try {
-      return civicrm_api3('CustomField', 'Getsingle', array('name' => $name, 'custom_group_id' => $customGroupId));
+      return civicrm_api3('CustomField', 'Getsingle', array('name' => $params['name'], 'custom_group_id' => $params['custom_group_id']));
     } catch (\CiviCRM_API3_Exception $ex) {
-      return FALSE;
+      return [];
     }
   }
 
@@ -88,22 +87,23 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
    * Method to fix option group in custom field because API always creates an option group whatever you do
    * so change option group to the one we created and then remove the one api created
    *
-   * @param array $customField
+   * @param int $id custom field ID
    * @param string $optionGroupName
    * @throws CiviCRM_API3_Exception
    */
-  protected function fixOptionGroups($customField, $optionGroupName) {
-    $optionGroup = new CRM_Civiconfig_Entity_OptionGroup();
-    $found = $optionGroup->getWithName($optionGroupName);
+  protected function fixOptionGroups($id, $optionGroupName) {
+    $customField = civicrm_api3('CustomField', 'getsingle', ['id' => $id]);
+    $optionGroupConfig = new CRM_Civiconfig_Entity_OptionGroup();
+    $found = $optionGroupConfig->getExisting(['name' => $optionGroupName]);
     // only if found is not equal to created custom field value
-    if ($found['id'] != $customField[key($customField)]['option_group_id']) {
+    if ($found['id'] != $customField['option_group_id']) {
       $qry = 'UPDATE civicrm_custom_field SET option_group_id = %1 WHERE id = %2';
       $params = array(
         1 => array($found['id'], 'Integer'),
-        2 => array(key($customField), 'Integer')
+        2 => array($id, 'Integer')
       );
       CRM_Core_DAO::executeQuery($qry, $params);
-      civicrm_api3('OptionGroup', 'Delete', array('id' => $customField[key($customField)]['option_group_id']));
+      civicrm_api3('OptionGroup', 'Delete', array('id' => $customField['option_group_id']));
     }
   }
 
