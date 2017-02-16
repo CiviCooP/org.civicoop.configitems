@@ -164,7 +164,7 @@
     "description": "Dutch VAT: 0% Rate",
     "is_deductible": "0",
     "is_tax": "1",
-    "tax_rate": "0.00000000",
+    "tax_rate": "0",
     "is_active": "1",
     "is_default": "0"
   },
@@ -177,7 +177,7 @@
     "description": "Dutch VAT: 6% Rate",
     "is_deductible": "0",
     "is_tax": "1",
-    "tax_rate": "6.00000000",
+    "tax_rate": "6",
     "is_active": "1",
     "is_default": "0"
   },
@@ -190,7 +190,7 @@
     "description": "Dutch VAT: 21% Rate",
     "is_deductible": "0",
     "is_tax": "1",
-    "tax_rate": "21.00000000",
+    "tax_rate": "21",
     "is_active": "1",
     "is_default": "1"
   },
