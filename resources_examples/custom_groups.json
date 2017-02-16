@@ -332,7 +332,7 @@
         "label": "School Name",
         "data_type": "String",
         "html_type": "Text",
-        "text_length": 256,
+        "text_length": 250,
         "is_searchable": 1,
         "is_view": 0,
         "column_name": "school_name",
