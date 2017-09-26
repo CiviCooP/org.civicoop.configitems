@@ -95,6 +95,26 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
           }
         }
         break;
+			case "Contribution":
+        if (!empty($params['extends_entity_column_value'])) {
+          if (is_array($params['extends_entity_column_value'])) {
+            foreach ($params['extends_entity_column_value'] as $extendsValue) {
+              $financialType = new CRM_Civiconfig_Entity_FinancialType();
+              $found = $financialType->getExisting(['name' => $extendsValue]);
+              if (isset($found['id'])) {
+                $params['extends_entity_column_value'][] = $found['id'];
+              }
+              unset ($financialType);
+            }
+          } else {
+            $financialType = new CRM_Civiconfig_Entity_FinancialType();
+            $found = $financialType->getExisting(['name' => $params['extends_entity_column_value']]);
+            if (isset($found['id'])) {
+              $params['extends_entity_column_value'] = $found['id'];
+            }
+          }
+        }
+        break;
       case "Membership":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
@@ -174,6 +194,7 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
             }
           }
         }
+
         break;
     }
   }
