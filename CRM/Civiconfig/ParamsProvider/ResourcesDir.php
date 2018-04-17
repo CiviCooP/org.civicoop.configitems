@@ -41,8 +41,8 @@ class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsPr
   public function getParamsArray($entityType) {
 
     // Get file name: convert camelcase to underscore separated, and add an 's'.
-    // TODO: this will not work as expected with UFField, UFGroup, UFJoin, UFMatch:
-    $fileName = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $entityType)) . 's.json';
+    // ActivityType becomes activity_type, UFGroup becomes uf_group
+    $fileName = strtolower(preg_replace('/(.)([A-Z][a-z])/', '$1_$2', $entityType)) . 's.json';
     $jsonFile = $this->_resourcesPath . $fileName;
 
     // Check if file exists
