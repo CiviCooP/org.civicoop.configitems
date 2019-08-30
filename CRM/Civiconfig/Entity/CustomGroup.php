@@ -1,7 +1,7 @@
 <?php
 /**
  * Class for CustomGroup configuration
- * 
+ *
  * This class creates the custom fields as well.
  *
  * @author Erik Hommel (CiviCooP) <erik.hommel@civicoop.org>
@@ -58,13 +58,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
       case "Activity":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $activityType = new CRM_Civiconfig_Entity_ActivityType();
               $found = $activityType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $params['extends_entity_column_value'][] = $found['value'];
+                $newExtends_entity_column_value[] = $found['value'];
               }
               unset ($activityType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $activityType = new CRM_Civiconfig_Entity_ActivityType();
@@ -78,13 +80,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
 			case "Event":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $activityType = new CRM_Civiconfig_Entity_EventType();
               $found = $activityType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $params['extends_entity_column_value'][] = $found['value'];
+                $newExtends_entity_column_value[] = $found['value'];
               }
               unset ($activityType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $activityType = new CRM_Civiconfig_Entity_EventType();
@@ -98,13 +102,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
 			case "Contribution":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $financialType = new CRM_Civiconfig_Entity_FinancialType();
               $found = $financialType->getExisting(['name' => $extendsValue]);
               if (isset($found['id'])) {
-                $params['extends_entity_column_value'][] = $found['id'];
+                $newExtends_entity_column_value[] = $found['id'];
               }
               unset ($financialType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $financialType = new CRM_Civiconfig_Entity_FinancialType();
@@ -118,13 +124,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
       case "Membership":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $membershipType = new CRM_Civiconfig_Entity_MembershipType();
               $found = $membershipType->getExisting(['name' => $extendsValue]);
               if (isset($found['id'])) {
-                $params['extends_entity_column_value'][] = $found['id'];
+                $newExtends_entity_column_value[] = $found['id'];
               }
               unset ($membershipType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $membershipType = new CRM_Civiconfig_Entity_MembershipType();
@@ -138,14 +146,16 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
       case "Relationship":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
               $found = $relationshipType->getExisting(['name_a_b' => $extendsValue]);
               if (isset($found['id'])) {
-                $params['extends_entity_column_value'][] = $found['id'];
+                $newExtends_entity_column_value[] = $found['id'];
               }
               unset ($relationshipType);
             }
+            $params['extends_entity_column_value'] = $newExtends_entity_column_value;
           } else {
             $relationshipType = new CRM_Civiconfig_Entity_RelationshipType();
             $found = $relationshipType->getExisting(['name_a_b' => $params['extends_entity_column_value']]);
@@ -158,13 +168,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
       case "ParticipantEventType":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $eventType = new CRM_Civiconfig_Entity_EventType();
               $found = $eventType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $params['extends_entity_column_value'][] = $found['value'];
+                $newExtends_entity_column_value[] = $found['value'];
               }
               unset ($eventType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $eventType = new CRM_Civiconfig_Entity_EventType();
@@ -178,13 +190,15 @@ class CRM_Civiconfig_Entity_CustomGroup extends CRM_Civiconfig_Entity {
 			case "ParticipantRole":
         if (!empty($params['extends_entity_column_value'])) {
           if (is_array($params['extends_entity_column_value'])) {
+            $newExtends_entity_column_value = array();
             foreach ($params['extends_entity_column_value'] as $extendsValue) {
               $eventType = new CRM_Civiconfig_Entity_ParticipantRole();
               $found = $eventType->getExisting(['name' => $extendsValue]);
               if (isset($found['value'])) {
-                $params['extends_entity_column_value'][] = $found['value'];
+                $newExtends_entity_column_value[] = $found['value'];
               }
               unset ($eventType);
+              $params['extends_entity_column_value'] = $newExtends_entity_column_value;
             }
           } else {
             $eventType = new CRM_Civiconfig_Entity_ParticipantRole();
