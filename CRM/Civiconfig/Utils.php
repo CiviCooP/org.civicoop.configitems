@@ -67,4 +67,14 @@ class CRM_Civiconfig_Utils {
   public static function getDefaultResourcesPath() {
       return realpath(__DIR__ . '/../../') . '/resources/';
   }
+
+  public static function isExtensionInstalled($extension) {
+    if (civicrm_api3('Extension', 'get', ['key' => $extension, 'status' => 'installed'])['count']) {
+      return true;
+    } elseif (civicrm_api3('Extension', 'get', ['key' => $extension, 'status' => 'installed'])['count']) {
+      return true;
+    }
+    return false;
+
+  }
 }

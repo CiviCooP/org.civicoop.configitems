@@ -34,7 +34,7 @@ class CRM_Civiconfig_Config {
    */
   public function getSupportedEntityTypes() {
     // TODO: make this list configurable.
-    return array(
+    $supportedEntities = array(
       'CivicrmSetting',
       'ContactType',
       'MembershipType',
@@ -52,5 +52,11 @@ class CRM_Civiconfig_Config {
       // CustomGroup as last one because it might need one of the previous ones (option group, relationship types)
       // DO NOT INCLUDE CustomField, because custom fields are updated together with custom groups.
     );
+
+    if (CRM_Civiconfig_Utils::isExtensionInstalled('de.systopia.identitytracker')) {
+      $supportedEntities[] = 'IdentityTrackerMapping';
+    }
+
+    return $supportedEntities;
   }
 }
