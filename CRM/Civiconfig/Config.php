@@ -49,6 +49,7 @@ class CRM_Civiconfig_Config {
       'LocationType',
       'CaseType',
       'CustomGroup',
+      'SepaCreditor',
       // CustomGroup as last one because it might need one of the previous ones (option group, relationship types)
       // DO NOT INCLUDE CustomField, because custom fields are updated together with custom groups.
     );

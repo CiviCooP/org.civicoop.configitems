@@ -1,0 +1,24 @@
+{
+  "NETS": {
+    "creditor_id": "1",
+    "identifier": "NETS",
+    "name": "Rabo",
+    "address": "",
+    "country_id": "1152",
+    "iban": "NL18ABNA0484869868",
+    "bic": "",
+    "currency": "EUR",
+    "mandate_prefix": "",
+    "mandate_active": "1",
+    "sepa_file_format": "pain.008.001.02",
+    "creditor_type": "SEPA",
+    "cycledays": "21",
+    "OOFF_horizon": "50",
+    "OOFF_notice": "26",
+    "RCUR_horizon": "50",
+    "RCUR_grace": "5",
+    "RCUR_notice": "26",
+    "FRST_notice": "26",
+    "txmsg": "Thank you."
+  }
+}
