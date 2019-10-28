@@ -48,6 +48,7 @@ class CRM_Civiconfig_Config {
       'ActivityType',
       'LocationType',
       'CaseType',
+      'Campaign',
       'CustomGroup',
       'SepaCreditor',
       // CustomGroup as last one because it might need one of the previous ones (option group, relationship types)
