@@ -46,7 +46,7 @@ abstract class CRM_Civiconfig_Entity {
    * @param array $params Parameters
    * @return int id of created/updated entity
    * @throws Exception when error from API Entity Create
-   */  
+   */
   public function create(array $params) {
     $existingEntity = $this->getExisting($params);
     // First prepare, then validate, because for e.g. event types, the
@@ -57,11 +57,11 @@ abstract class CRM_Civiconfig_Entity {
       $result = civicrm_api3($this->entity, 'Create', $params);
     } catch (\CiviCRM_API3_Exception $ex) {
       throw new \CRM_Civiconfig_EntityException("Could not create or update {$this->entity} type with name "
-        .$params['name'].". Error from API {$this->entity}.Create: " . $ex->getMessage() . '.');
+        .$params['name'].". Error from API {$this->entity}.Create: " . $ex->getMessage() . '. Params: '.json_encode($params));
     }
     return $result['id'];
   }
-  
+
   /**
    * Creates/updates all objects at once.
    * This function now simply gets an array of items instead of having to fetch it here.
@@ -71,7 +71,7 @@ abstract class CRM_Civiconfig_Entity {
   public function createAll($paramsArray) {
     foreach ($paramsArray as $params) {
       $this->create($params);
-    }    
+    }
   }
 
   /**
