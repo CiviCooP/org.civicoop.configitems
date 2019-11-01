@@ -13,7 +13,7 @@
 class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsProvider {
 
   protected $_resourcesPath = NULL;
-  
+
   /**
    * Constructor.
    *
@@ -37,7 +37,7 @@ class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsPr
    * @param string $entityType CiviCRM entity type to create params for
    * @return array $params Parameters
    * @throws \CRM_Civiconfig_EntityException Thrown if json_decode returns false
-   */  
+   */
   public function getParamsArray($entityType) {
 
     // Get file name: convert camelcase to underscore separated, and add an 's'.
@@ -47,7 +47,7 @@ class CRM_Civiconfig_ParamsProvider_ResourcesDir extends CRM_Civiconfig_ParamsPr
 
     // Check if file exists
     if (!is_readable($jsonFile)) {
-      throw new \CRM_Civiconfig_EntityException("No readable JSON file for entity type '$entityType'.");
+      throw new \CRM_Civiconfig_ResourceFileNotFoundException("No readable JSON file for entity type '$entityType'.");
     }
 
     // Read file and try to parse JSON

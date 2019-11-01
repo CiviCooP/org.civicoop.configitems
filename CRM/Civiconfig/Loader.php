@@ -61,6 +61,8 @@ class CRM_Civiconfig_Loader {
 
       } catch (\CRM_Civiconfig_EntityException $e) {
         $ret[$entityType] = "{$entityType}: ERROR - " . $e->getMessage();
+      } catch (\CRM_Civiconfig_ResourceFileNotFoundException $e) {
+        // Skipp the file.
       }
 
     }
