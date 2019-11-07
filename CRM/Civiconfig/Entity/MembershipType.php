@@ -34,11 +34,35 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
     // get duration unit and interval
     $this->getDuration($params, $existing);
 
+    // get relationship types
+    $this->getRelationshipTypes($params, $existing);
+
     if (empty($params['description'])) {
       $params['description'] = CRM_Civiconfig_Utils::buildLabelFromName($params['name']);
     }
 
     parent::prepareParams($params, $existing);
+  }
+
+  /**
+   * Method to retrieve or relationship types
+   *
+   * @param array $params params that will be used for entity creation
+   * @param array $existing
+   */
+  private function getRelationshipTypes(array &$params, array $existing = []) {
+    if (!isset($params['relationship_type']) || !is_array($params['relationship_type'])) {
+      return;
+    }
+    foreach($params['relationship_type'] as $rel_type) {
+      try {
+        $params['relationship_type_id'][] = civicrm_api3('RelationshipType', 'getvalue', array('name_a_b' => $rel_type, 'return' => 'id'));
+        $params['relationship_direction'][] = 'a_b';
+      } catch (CiviCRM_API3_Exception $e) {
+        $params['relationship_type_id'] = civicrm_api3('RelationshipType', 'getvalue', array('name_b_a' => $rel_type, 'return' => 'id'));
+        $params['relationship_direction'][] = 'b_a';
+      }
+    }
   }
 
   /**
