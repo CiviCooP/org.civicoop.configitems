@@ -37,8 +37,8 @@ class CRM_Civiconfig_Config {
     $supportedEntities = array(
       'CivicrmSetting',
       'ContactType',
-      'MembershipType',
       'RelationshipType',
+      'MembershipType',
       'OptionGroup',
       'Group',
       'Tag',
