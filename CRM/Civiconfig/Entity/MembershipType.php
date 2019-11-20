@@ -59,7 +59,7 @@ class CRM_Civiconfig_Entity_MembershipType extends CRM_Civiconfig_Entity {
         $params['relationship_type_id'][] = civicrm_api3('RelationshipType', 'getvalue', array('name_a_b' => $rel_type, 'return' => 'id'));
         $params['relationship_direction'][] = 'a_b';
       } catch (CiviCRM_API3_Exception $e) {
-        $params['relationship_type_id'] = civicrm_api3('RelationshipType', 'getvalue', array('name_b_a' => $rel_type, 'return' => 'id'));
+        $params['relationship_type_id'][] = civicrm_api3('RelationshipType', 'getvalue', array('name_b_a' => $rel_type, 'return' => 'id'));
         $params['relationship_direction'][] = 'b_a';
       }
     }
