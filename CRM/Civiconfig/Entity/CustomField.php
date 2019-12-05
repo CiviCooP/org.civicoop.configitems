@@ -65,6 +65,8 @@ class CRM_Civiconfig_Entity_CustomField extends CRM_Civiconfig_Entity {
     if (isset($params['option_group'])) {
       $this->fixOptionGroups($id, $params['option_group']);
     }
+    // Flush the cache
+    CRM_Utils_System::flushCache();
     return $id;
   }
 
