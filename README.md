@@ -1,3 +1,9 @@
+MOVED
+=====
+
+This repository is moved to https://lab.civicrm.org/extensions/configitems
+
+
 org.civicoop.configitems
 ========================
 
